@@ -10,6 +10,8 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'pg'
 
+gem 'figaro'
+
 group :development do
   gem 'thin'
   gem "better_errors"
