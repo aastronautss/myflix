@@ -6,6 +6,10 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+Category.create name: 'Comedy'
+Category.create name: 'Drama'
+Category.create name: 'Action'
+
 Video.create title: 'Bill and Ted\'s Excellent Adventure',
             description: "Bill (Alex Winter) and Ted (Keanu Reeves) are high "\
               "school buddies starting a band. However, they are about to fail "\
@@ -16,6 +20,7 @@ Video.create title: 'Bill and Ted\'s Excellent Adventure',
               "and Ted travel to various points in history, returning with "\
               "important figures to help them complete their final history "\
               "presentation.",
+            category: Category.find_by(name: 'Comedy'),
             small_cover_url: 'http://ia.media-imdb.com/images/M/MV5BMTk3Mjk5MzI3OF5BMl5BanBnXkFtZTcwMTY4MzcyNA@@._V1_UY1200_CR85,0,630,1200_AL_.jpg',
             large_cover_url: 'http://placehold.it/665x375'
 
@@ -28,6 +33,7 @@ Video.create title: 'Mulholland Drive',
               "fame as an actress. Together, the two attempt to solve the "\
               "mystery of Rita's true identity. The story is set in a "\
               "dream-like Los Angeles, spoilt neither by traffic jams nor smog.",
+            category: Category.find_by(name: 'Drama'),
             small_cover_url: 'http://placehold.it/166x236',
             large_cover_url: 'http://placehold.it/665x375'
 
@@ -41,5 +47,6 @@ Video.create title: 'Mad Max: Fury Road',
               "massive, armored truck the War Rig, they try to outrun the "\
               "ruthless warlord and his henchmen in a deadly high-speed chase "\
               "through the Wasteland.",
+            category: Category.find_by(name: 'Action'),
             small_cover_url: 'http://placehold.it/166x236',
             large_cover_url: 'http://placehold.it/665x375'
