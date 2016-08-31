@@ -51,7 +51,7 @@ describe Video do
         expect(result).to contain_exactly(@mad_max, @mad_max_2)
       end
 
-      it 'is case sensitive' do
+      it 'is case insensitive' do
         result = Video.search_by_title('mad max')
 
         expect(result).to contain_exactly(@mad_max, @mad_max_2)
