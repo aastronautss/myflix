@@ -3,5 +3,8 @@ class Video < ActiveRecord::Base
 
   validates :title, presence: true
   validates :description, presence: true
-  # validates :category_id, presence: true
+
+  def self.search_by_title(search_term)
+
+  end
 end
