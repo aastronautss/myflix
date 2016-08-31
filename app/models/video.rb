@@ -5,6 +5,7 @@ class Video < ActiveRecord::Base
   validates :description, presence: true
 
   def self.search_by_title(search_term)
-    Video.where('title ILIKE ?', "%#{search_term}%")
+    return [] if search_term.blank?
+    Video.order(:created_at).where('title ILIKE ?', "%#{search_term}%")
   end
 end

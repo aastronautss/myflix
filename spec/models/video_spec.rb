@@ -12,10 +12,18 @@ describe Video do
 
   describe '.search_by_title' do
     before(:each) do
-      @mad_max = Video.create title: 'Mad Max', description: 'Video 1'
+      @mad_max = Video.create title: 'Mad Max',
+                              description: 'Video 1',
+                              created_at: 1.day.ago
       @blue_velvet = Video.create title: 'Blue Velvet', description: 'Video 2'
       @mad_max_2 = Video.create title: 'Mad Max 2: The Road Warrior',
                                 description: 'Video 3'
+    end
+
+    context 'with an empty search string' do
+      it 'returns an empty array' do
+        expect(Video.search_by_title('')).to eq([])
+      end
     end
 
     context 'with no results' do
@@ -45,16 +53,16 @@ describe Video do
     end
 
     context 'with multiple results' do
-      it 'matches exact match' do
+      it 'matches exact match ordered by created_at' do
         result = Video.search_by_title('Mad Max')
 
-        expect(result).to contain_exactly(@mad_max, @mad_max_2)
+        expect(result).to eq([@mad_max, @mad_max_2])
       end
 
-      it 'is case insensitive' do
+      it 'is case insensitive ordered by created_at' do
         result = Video.search_by_title('mad max')
 
-        expect(result).to contain_exactly(@mad_max, @mad_max_2)
+        expect(result).to eq([@mad_max, @mad_max_2])
       end
     end
   end
