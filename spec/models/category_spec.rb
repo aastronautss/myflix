@@ -34,9 +34,9 @@ describe Category do
                                   category: @movies
 
         result = @movies.recent_videos
-        expected = [ @blue_velvet,
+        expected = [ @mad_max_2,
                      @mad_max,
-                     @mad_max_2 ]
+                     @blue_velvet ]
 
         expect(result).to eq(expected)
       end
@@ -85,12 +85,12 @@ describe Category do
 
       it 'returns videos in order' do
         result = @movies.recent_videos
-        expected = [ @blazing_saddles,
-                     @blue_velvet,
-                     @dark_city,
-                     @labyrinth,
+        expected = [ @dark_knight,
+                     @mad_max_2,
                      @mad_max,
-                     @mad_max_2 ]
+                     @labyrinth,
+                     @blazing_saddles,
+                     @blue_velvet ]
 
         expect(result).to eq(expected)
       end
