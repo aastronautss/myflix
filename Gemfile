@@ -9,7 +9,9 @@ gem 'sass-rails'
 gem 'uglifier'
 gem 'jquery-rails'
 gem 'pg'
+gem 'bcrypt'
 
+gem 'bootstrap_form'
 gem 'figaro'
 
 group :development do
@@ -26,7 +28,7 @@ end
 
 group :test do
   gem 'database_cleaner', '1.4.1'
-  gem 'shoulda-matchers', '2.7.0'
+  gem 'shoulda-matchers', '2.8.0'
   gem 'vcr', '2.9.3'
 end
 
