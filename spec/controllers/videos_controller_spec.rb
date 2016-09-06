@@ -25,6 +25,10 @@ describe VideosController do
         expect(assigns(:video)).to eq(video)
       end
 
+      it 'sets @reviews' do
+        expect(assigns(:reviews)).to match_array(video.reviews)
+      end
+
       it 'renders the show template' do
         expect(response).to render_template(:show)
       end

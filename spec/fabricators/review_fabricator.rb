@@ -1,6 +1,12 @@
 Fabricator :review do
-  rating { rand(1..5) }
-  body { Faker::Lorem.paragraph(rand(1..5)) }
-  author
+  rating { (1..5).to_a.sample }
+  body { Faker::Lorem.paragraphs((1..5).to_a.sample).join("\n\n") }
+  user do
+    if User.any?
+      User.all.sample
+    else
+      Fabricate :user
+    end
+  end
   video
 end
