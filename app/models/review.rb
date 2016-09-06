@@ -1,9 +1,9 @@
 class Review < ActiveRecord::Base
   belongs_to :video
-  belongs_to :author, class_name: 'User', foreign_key: 'user_id'
+  belongs_to :user
 
-  validates_presence_of :video
-  validates_presence_of :author
+  # validates_presence_of :video
+  validates_presence_of :user
   validates_presence_of :rating
 
   validates_numericality_of :rating,
