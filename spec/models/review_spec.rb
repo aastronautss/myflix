@@ -10,6 +10,7 @@ describe Review do
     # it { should validate_presence_of(:video) }
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:rating) }
+    it { should validate_presence_of(:body) }
 
     it { should validate_numericality_of(:rating).
                 is_less_than_or_equal_to(5).

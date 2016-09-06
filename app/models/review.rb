@@ -3,8 +3,7 @@ class Review < ActiveRecord::Base
   belongs_to :user
 
   # validates_presence_of :video
-  validates_presence_of :user
-  validates_presence_of :rating
+  validates_presence_of :user, :rating, :body
 
   validates_numericality_of :rating,
     less_than_or_equal_to: 5,
