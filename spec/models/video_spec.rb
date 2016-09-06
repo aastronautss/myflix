@@ -6,6 +6,7 @@ describe Video do
     it { should have_many(:reviews).
                   dependent(:destroy).
                   order('created_at desc') }
+    it { should have_many(:queue_members).dependent(:destroy) }
   end
 
   context 'validations' do

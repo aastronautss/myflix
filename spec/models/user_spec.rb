@@ -3,6 +3,7 @@ require 'spec_helper'
 describe User do
   context 'associations' do
     it { should have_many(:reviews).dependent(:destroy) }
+    it { should have_many(:queue_members).dependent(:destroy).order('list_order asc') }
   end
 
   context 'validations' do
