@@ -21,7 +21,7 @@ describe VideosController do
         get :show, { id: video.id }
       end
 
-      it 'sets the @video variable' do
+      it 'sets @video' do
         expect(assigns(:video)).to eq(video)
       end
 
@@ -40,7 +40,6 @@ describe VideosController do
         get :search, { q: video.title.downcase }
       end
 
-
       it 'redirects to root path' do
         expect(response).to redirect_to(root_path)
       end
@@ -52,7 +51,7 @@ describe VideosController do
         get :search, q: video.title.downcase
       end
 
-      it 'sets the @results variable' do
+      it 'sets @results' do
         expect(assigns(:results)).to exist
       end
 

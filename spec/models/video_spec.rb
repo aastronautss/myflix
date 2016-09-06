@@ -3,6 +3,9 @@ require 'spec_helper'
 describe Video do
   context 'associations' do
     it { should belong_to(:category) }
+    it { should have_many(:reviews).
+                  dependent(:destroy).
+                  order('created_at desc') }
   end
 
   context 'validations' do
@@ -64,6 +67,14 @@ describe Video do
 
         expect(result).to eq([@mad_max, @mad_max_2])
       end
+    end
+  end
+
+  describe '#average_review' do
+    let(:video) { Fabricate :video }
+
+    context 'with no reviews' do
+
     end
   end
 end
