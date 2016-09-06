@@ -24,6 +24,8 @@ group :development, :test do
   gem 'pry'
   gem 'pry-nav'
   gem 'rspec-rails', '3.5'
+  gem 'fabrication'
+  gem 'faker'
 end
 
 group :test do

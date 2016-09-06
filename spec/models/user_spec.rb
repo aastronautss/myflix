@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe User do
+  context 'associations' do
+    it { should have_many(:reviews).dependent(:destroy) }
+  end
+
   context 'validations' do
     it { should have_secure_password }
 
-    it do
-      should validate_presence_of(:email)
-    end
+    it { should validate_presence_of(:email) }
     it { should validate_presence_of(:full_name) }
     it { should validate_presence_of(:password) }
 

@@ -1,5 +1,6 @@
 class Video < ActiveRecord::Base
   belongs_to :category
+  has_many :reviews, -> { order('created_at desc') }, dependent: :destroy
 
   validates :title, presence: true
   validates :description, presence: true
