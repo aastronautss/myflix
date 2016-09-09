@@ -7,7 +7,9 @@ Myflix::Application.routes.draw do
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   get '/logout', to: 'sessions#destroy'
+
   get '/home', to: 'videos#index'
+  get 'my_queue', to: 'queue_members#index'
 
   resources :videos, only: [:index, :show] do
     collection do
