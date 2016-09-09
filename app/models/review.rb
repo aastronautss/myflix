@@ -8,4 +8,6 @@ class Review < ActiveRecord::Base
   validates_numericality_of :rating,
     less_than_or_equal_to: 5,
     greater_than_or_equal_to: 1
+
+  # validates_uniqueness_of :user_id, scope: :video_id
 end

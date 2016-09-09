@@ -6,12 +6,11 @@ class QueueMember < ActiveRecord::Base
 
   validates_uniqueness_of :video_id, scope: :user_id
 
-  def video_title
-    self.video.title
-  end
+  delegate :category, to: :video
+  delegate :title, to: :video, prefix: :video
 
-  def categroy_name
-    self.video.categroy.name
+  def category_name
+    category.name
   end
 
   def rating

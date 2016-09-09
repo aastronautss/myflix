@@ -16,6 +16,10 @@ Myflix::Application.routes.draw do
       get 'search', to: 'videos#search'
     end
 
+    member do
+      post 'add_to_queue', to: 'queue_members#create'
+    end
+
     resources :reviews, only: [:create]
   end
 

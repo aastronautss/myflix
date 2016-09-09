@@ -17,12 +17,13 @@
             - @queue_members.each do |member|
               %tr
                 %td
-                  %input.form-control(type="text" value="1")
+                  %input.form-control{ type: 'text', value: member.list_order }
                 %td
-                  = link_to queue_member.video_title, queue_member.video
+                  = link_to member.video_title, member.video
                 %td
                   = button_to "Play", nil, class: "btn btn-default"
-                %td= queue_member.rating
+                %td
+                  = member.rating
                   -# %select.form-group(name="")
                   -#   %option(value="5") 5 Stars
                   -#   %option(value="4") 4 Stars
@@ -30,7 +31,7 @@
                   -#   %option(value="2") 2 Stars
                   -#   %option(value="1") 1 Star
                 %td
-                  = link_to queue_member.category_name, queue_member.category
+                  = link_to member.category_name, member.video.category
                 %td
                   = link_to "", method: :post do
                     %i.glyphicon.glyphicon-remove
