@@ -78,4 +78,56 @@ describe QueueMembersController do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    let(:video) { Fabricate :video }
+
+    context 'when not logged in' do
+      it 'redirects to root path' do
+        current_user = Fabricate :user
+        mem = current_user.add_to_queue video
+        delete :destroy, id: mem.id
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'when logged in as the incorrect user' do
+      let(:current_user) { Fabricate :user }
+      let(:queue_owner) { Fabricate :user }
+      before(:each) do
+        session[:user_id] = current_user.id
+        member = queue_owner.add_to_queue video
+        @action = -> { delete :destroy, id: member.id }
+      end
+
+      it 'does not delete the QueueMember record' do
+        expect{ @action.call }.to change{ QueueMember.all.length }.by(0)
+      end
+    end
+
+    context 'when logged in' do
+      let(:current_user) { Fabricate :user }
+      before(:each) do
+        session[:user_id] = current_user.id
+        member = current_user.add_to_queue video
+        @action = -> { delete :destroy, id: member.id }
+      end
+
+      context 'on valid delete' do
+        it 'destroys QueueMember record' do
+          expect{ @action.call }.to change{ QueueMember.all.length }.by(-1)
+        end
+
+        it 'redirects to my_queue path' do
+          @action.call
+          expect(response).to redirect_to(my_queue_path)
+        end
+      end
+
+      context 'on invalid delete' do
+
+      end
+    end
+  end
 end

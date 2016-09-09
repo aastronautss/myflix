@@ -15,4 +15,14 @@ class QueueMembersController < ApplicationController
       redirect_to video
     end
   end
+
+  def destroy
+    @queue_member = QueueMember.find params[:id]
+
+    if current_user.queue_members.include? @queue_member
+      @queue_member.destroy
+      flash[:success] = "#{@queue_member.video_title} successfully removed from your queue!"
+    end
+    redirect_to my_queue_path
+  end
 end
