@@ -23,4 +23,37 @@ describe QueueMember do
       expect(queue_member.video_title).to eq(video.title)
     end
   end
+
+  describe '#rating' do
+    context 'with a review present' do
+      it "returns the associated user's review rating on the associated video" do
+        user = Fabricate :user
+        video = Fabricate :video, reviews: []
+        review = Fabricate :review, user: user, video: video
+        queue_member = user.add_to_queue video
+
+        expect(queue_member.rating).to eq(review.rating)
+      end
+    end
+
+    context 'with no review present' do
+      it 'returns nil' do
+        user = Fabricate :user
+        video = Fabricate :video, reviews: []
+        queue_member = user.add_to_queue video
+
+        expect(queue_member.rating).to be_nil
+      end
+    end
+  end
+
+  describe '#category_name' do
+    it "returns the name of the associated video's category" do
+      user = Fabricate :user
+      video = Fabricate :video
+      queue_member = user.add_to_queue video
+
+      expect(queue_member.category_name).to eq(video.category.name)
+    end
+  end
 end

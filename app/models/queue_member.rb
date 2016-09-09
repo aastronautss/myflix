@@ -9,4 +9,13 @@ class QueueMember < ActiveRecord::Base
   def video_title
     self.video.title
   end
+
+  def categroy_name
+    self.video.categroy.name
+  end
+
+  def rating
+    review = Review.find_by(user: self.user, video: self.video)
+    review.nil? ? nil : review.rating
+  end
 end
