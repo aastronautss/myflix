@@ -124,9 +124,107 @@ describe QueueMembersController do
           expect(response).to redirect_to(my_queue_path)
         end
       end
+    end
+  end
 
-      context 'on invalid delete' do
+  describe 'POST update_queue' do
+    context 'when not logged in' do
+      it 'redirets to root path' do
+        post :update_queue, queue_members: [ { id: 1, position: 1 } ]
+        expect(response).to redirect_to(root_path)
+      end
+    end
 
+    context 'when logged in' do
+      let(:user) { Fabricate :user }
+      let(:videos) { Fabricate.times 3, :video }
+      let(:queue_members) { videos.map { |video| user.add_to_queue video } }
+
+      before(:each) { session[:user_id] = user.id }
+
+      context 'with no committed changes' do
+        let(:action) do
+          lambda do
+           post :update_queue,
+             queue_members: queue_members.map { |m| { id: m.id, position: m.list_order } }
+          end
+        end
+
+        it 'does not change any queue members' do
+          expect{ action.call }.to_not change(user, :queue_members)
+        end
+
+        it 'redirects to my_queue path' do
+          action.call
+          expect(response).to redirect_to(my_queue_path)
+        end
+      end
+
+      context 'with committed changes in the correct sequence' do
+        let(:action) do
+          lambda do
+            post :update_queue,
+              queue_members: [ { id: queue_members[0].id, position: 2 },
+                               { id: queue_members[1].id, position: 1 },
+                               { id: queue_members[2].id, position: 3 } ]
+          end
+        end
+
+        # Not a very well-written test case, but it works.
+        it 'updates the appropriate queue members' do
+          action.call
+          # binding.pry
+          expect(user.queue_members.map(&:id)).to eq([ queue_members[1].id,
+                                                       queue_members[0].id,
+                                                       queue_members[2].id ])
+        end
+
+        it 'redirects to my_queue path' do
+          action.call
+          expect(response).to redirect_to(my_queue_path)
+        end
+      end
+
+      context 'with sparsely commited changes' do
+        let(:action) do
+          lambda do
+            post :update_queue,
+              queue_members: [ { id: queue_members[0].id, position: 1 },
+                               { id: queue_members[1].id, position: 2 },
+                               { id: queue_members[2].id, position: 4 } ]
+          end
+        end
+
+        it 'adjusts the order so everything is in sequence' do
+          action.call
+          expect(user.queue_members.map(&:list_order)).to eq([1, 2, 3])
+        end
+
+        it 'redirects to my_queue path' do
+          action.call
+          expect(response).to redirect_to(my_queue_path)
+        end
+      end
+
+      context 'with densely commited changes' do
+        let(:action) do
+          lambda do
+            post :update_queue,
+              queue_members: [ { id: queue_members[0].id, position: 1 },
+                               { id: queue_members[1].id, position: 1 },
+                               { id: queue_members[2].id, position: 2 } ]
+          end
+        end
+
+        it 'adjusts the order so everything is in sequence' do
+          action.call
+          expect(user.queue_members.map(&:list_order)).to eq([1, 2, 3])
+        end
+
+        it 'redirects to my_queue path' do
+          action.call
+          expect(response).to redirect_to(my_queue_path)
+        end
       end
     end
   end
