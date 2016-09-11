@@ -21,4 +21,15 @@ class User < ActiveRecord::Base
   def next_queue_order
     (self.queue_members.maximum(:list_order) || 0) + 1
   end
+
+  def update_queue(queue_member_params)
+    QueueMember.transaction do
+      sorted_params = queue_member_params.sort_by { |m| m[:position] }
+
+      sorted_params.each_with_index do |attrs, idx|
+        queue_member = QueueMember.find attrs[:id]
+        queue_member.update! list_order: idx + 1
+      end
+    end
+  end
 end

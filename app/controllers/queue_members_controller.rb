@@ -25,4 +25,15 @@ class QueueMembersController < ApplicationController
     end
     redirect_to my_queue_path
   end
+
+  def update_queue
+    current_user.update_queue queue_params
+    redirect_to my_queue_path
+  end
+
+  private
+
+  def queue_params
+    params.require(:queue_members)
+  end
 end
