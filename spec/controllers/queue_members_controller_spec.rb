@@ -185,7 +185,7 @@ describe QueueMembersController do
         end
       end
 
-      context 'with sparsely commited changes' do
+      context 'with sparsely committed changes' do
         let(:action) do
           lambda do
             post :update_queue,
@@ -206,7 +206,7 @@ describe QueueMembersController do
         end
       end
 
-      context 'with densely commited changes' do
+      context 'with densely committed changes' do
         let(:action) do
           lambda do
             post :update_queue,
