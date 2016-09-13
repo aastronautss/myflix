@@ -12,6 +12,8 @@ describe QueueMember do
     # it { should validate_presence_of(:list_order) }
 
     it { should validate_uniqueness_of(:video_id).scoped_to(:user_id) }
+
+    it { should validate_numericality_of(:list_order).only_integer }
   end
 
   describe '#video_title' do

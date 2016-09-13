@@ -81,6 +81,7 @@ describe QueueMembersController do
 
   describe 'DELETE destroy' do
     let(:video) { Fabricate :video }
+    let(:other_video) { Fabricate :video }
 
     context 'when not logged in' do
       it 'redirects to root path' do
@@ -111,12 +112,18 @@ describe QueueMembersController do
       before(:each) do
         session[:user_id] = current_user.id
         member = current_user.add_to_queue video
+        current_user.add_to_queue other_video
         @action = -> { delete :destroy, id: member.id }
       end
 
       context 'on valid delete' do
         it 'destroys QueueMember record' do
           expect{ @action.call }.to change{ QueueMember.all.length }.by(-1)
+        end
+
+        it 'normalizes the remaining queue members' do
+          @action.call
+          expect(QueueMember.first.list_order).to eq(1)
         end
 
         it 'redirects to my_queue path' do
@@ -173,7 +180,6 @@ describe QueueMembersController do
         # Not a very well-written test case, but it works.
         it 'updates the appropriate queue members' do
           action.call
-          # binding.pry
           expect(user.queue_members.map(&:id)).to eq([ queue_members[1].id,
                                                        queue_members[0].id,
                                                        queue_members[2].id ])
@@ -216,7 +222,7 @@ describe QueueMembersController do
           end
         end
 
-        it 'adjusts the order so everything is in sequence' do
+        it 'normalizes position numbers' do
           action.call
           expect(user.queue_members.map(&:list_order)).to eq([1, 2, 3])
         end
@@ -224,6 +230,52 @@ describe QueueMembersController do
         it 'redirects to my_queue path' do
           action.call
           expect(response).to redirect_to(my_queue_path)
+        end
+      end
+
+      context 'with invalid inputs' do
+        let(:action) do
+          lambda do
+            post :update_queue,
+              queue_members: [ { id: queue_members[0].id, position: 1 },
+                               { id: queue_members[1].id, position: 2.4 },
+                               { id: queue_members[2].id, position: 3 } ]
+          end
+        end
+
+        it 'redirects to the my_queue page' do
+          action.call
+          expect(response).to redirect_to(my_queue_path)
+        end
+
+        it 'flashes the error message' do
+          action.call
+          expect(flash[:error]).to be_present
+        end
+
+        it 'does not change the queue items' do
+          expect{ action.call }.to_not change(user, :queue_members)
+        end
+      end
+
+      context 'with queue items that do not belong to the current user' do
+        let(:other_user) { Fabricate :user }
+        before(:each) do
+          queue_members
+          videos << Fabricate(:video)
+          queue_members << other_user.add_to_queue(videos.last)
+          @action = lambda do
+            post :update_queue,
+              queue_members: [ { id: queue_members[0].id, position: 1 },
+                               { id: queue_members[1].id, position: 2 },
+                               { id: queue_members[2].id, position: 3 },
+                               { id: queue_members[3].id, position: 4 } ]
+          end
+        end
+
+        it 'does not change the queue items' do
+          @action.call
+          expect(queue_members[3].reload[:list_order]).to eq(1)
         end
       end
     end

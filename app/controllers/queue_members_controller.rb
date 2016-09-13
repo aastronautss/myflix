@@ -22,12 +22,14 @@ class QueueMembersController < ApplicationController
     if current_user.queue_members.include? @queue_member
       @queue_member.destroy
       flash[:success] = "#{@queue_member.video_title} successfully removed from your queue!"
+      current_user.normalize_queue_member_orders
     end
     redirect_to my_queue_path
   end
 
   def update_queue
-    current_user.update_queue queue_params
+    valid_params = current_user.update_queue queue_params
+    flash[:error] = 'Invalid position numbers.' unless valid_params
     redirect_to my_queue_path
   end
 

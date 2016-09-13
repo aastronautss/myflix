@@ -23,12 +23,28 @@ class User < ActiveRecord::Base
   end
 
   def update_queue(queue_member_params)
-    QueueMember.transaction do
-      sorted_params = queue_member_params.sort_by { |m| m[:position] }
+    begin
+      update_queue_members(queue_member_params)
+      normalize_queue_member_orders
+    rescue ActiveRecord::RecordInvalid
+      return false
+    end
+    true
+  end
 
-      sorted_params.each_with_index do |attrs, idx|
-        queue_member = QueueMember.find attrs[:id]
-        queue_member.update! list_order: idx + 1
+  def normalize_queue_member_orders
+    queue_members.each_with_index do |member, index|
+      member.update! list_order: index + 1
+    end
+  end
+
+  private
+
+  def update_queue_members(params)
+    QueueMember.transaction do
+      params.each do |attrs|
+        member = QueueMember.find attrs[:id]
+        member.update_attributes! list_order: attrs[:position] if member.user == self
       end
     end
   end

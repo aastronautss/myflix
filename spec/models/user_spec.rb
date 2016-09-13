@@ -147,5 +147,21 @@ describe User do
         expect(user.queue_members.map(&:list_order)).to eq([1, 2, 3])
       end
     end
+
+    context 'with invalid input' do
+      let(:action) do
+        lambda do
+          queue_params = [ { id: queue_members[0].id, position: 1 },
+                           { id: queue_members[1].id, position: 2.4 },
+                           { id: queue_members[2].id, position: 3 } ]
+
+          user.update_queue queue_params
+        end
+      end
+
+      it 'returns false' do
+        expect(action.call).to be(false)
+      end
+    end
   end
 end
