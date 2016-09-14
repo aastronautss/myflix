@@ -58,4 +58,59 @@ describe QueueMember do
       expect(queue_member.category_name).to eq(video.category.name)
     end
   end
+
+  describe '#set_rating' do
+    let!(:user) { Fabricate :user }
+    let!(:video) { Fabricate :video, reviews: [] }
+    let!(:queue_member) { user.add_to_queue video }
+
+    context 'with no input' do
+      context 'when a review exists' do
+        let!(:review) { Fabricate :review, user: user, video: video }
+
+        it "doesn't alter the review" do
+          expect{ queue_member.set_rating('') }.to_not change(queue_member.reload, :rating)
+        end
+      end
+
+      context 'with no existing review' do
+        it "doesn't create a new review" do
+          expect{ queue_member.set_rating('') }.to_not change{ video.reload.reviews.count }
+        end
+      end
+    end
+
+    context 'with same input as existing review' do
+      let!(:review) { Fabricate :review, user: user, video: video, rating: 5}
+
+      it "doesn't change the existing review" do
+        queue_member.set_rating 5
+        expect(queue_member.rating).to eq(5)
+      end
+    end
+
+    context 'with different input from existing review' do
+      let!(:review) { Fabricate :review, user: user, video: video, rating: 5}
+
+      it 'alters the review to match the input' do
+        queue_member.set_rating 4
+        expect(queue_member.rating).to eq(4)
+      end
+    end
+
+    context 'with input and no existing review' do
+      before(:each) { queue_member.set_rating 4 }
+      it 'creates a new review' do
+        expect(user.reviews.length).to be(1)
+      end
+
+      it "matches the new review's rating with the input" do
+        expect(queue_member.rating).to eq(4)
+      end
+
+      it 'leaves the body of the new review blank' do
+        expect(user.reviews.first.body).to be_blank
+      end
+    end
+  end
 end

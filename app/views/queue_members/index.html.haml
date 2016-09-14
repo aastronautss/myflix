@@ -25,6 +25,7 @@
                   %td
                     = button_to "Play", nil, class: "btn btn-default"
                   %td
+                    = select_tag('queue_members[][rating]', options_for_select((1..5).map { |num| ["#{num} #{'star'.pluralize num}", num] }), class: 'form-group')
                     = member.rating
                     -# %select.form-group(name="")
                     -#   %option(value="5") 5 Stars
