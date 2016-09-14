@@ -167,7 +167,7 @@ describe QueueMembersController do
         end
       end
 
-      context 'with committed changes in the correct sequence' do
+      context 'with committed normalized changes' do
         let(:action) do
           lambda do
             post :update_queue,

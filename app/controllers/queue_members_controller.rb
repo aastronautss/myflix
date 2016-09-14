@@ -28,14 +28,23 @@ class QueueMembersController < ApplicationController
   end
 
   def update_queue
-    valid_params = current_user.update_queue queue_params
-    flash[:error] = 'Invalid position numbers.' unless valid_params
+    begin
+      update_queue_members
+      current_user.normalize_queue_member_orders
+    rescue ActiveRecord::RecordInvalid
+      flash[:error] = 'Invalid position numbers.'
+    end
     redirect_to my_queue_path
   end
 
   private
 
-  def queue_params
-    params.require(:queue_members)
+  def update_queue_members
+    QueueMember.transaction do
+      params[:queue_members].each do |attrs|
+        member = QueueMember.find attrs[:id]
+        member.update! list_order: attrs[:position] if member.user == current_user
+      end
+    end
   end
 end
