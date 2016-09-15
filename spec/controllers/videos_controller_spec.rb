@@ -4,21 +4,10 @@ describe VideosController do
   describe 'GET show' do
     let(:video) { Fabricate :video }
 
-    context 'when not logged in' do
-      before(:each) do
-        session[:user_id] = nil
-        get :show, { id: video.id }
-      end
-
-      it 'redirects to root path' do
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
     context 'when logged in' do
       before(:each) do
-        session[:user_id] = Fabricate(:user).id
-        get :show, { id: video.id }
+        set_user
+        get :show, id: video.id
       end
 
       it 'sets @video' do
@@ -33,25 +22,18 @@ describe VideosController do
         expect(response).to render_template(:show)
       end
     end
+
+    it_behaves_like 'a private action' do
+      let(:action) { get :show, id: video.id }
+    end
   end
 
   describe 'GET search' do
     let(:video) { Fabricate :video }
 
-    context 'when not logged in' do
-      before(:each) do
-        session[:user_id] = nil
-        get :search, { q: video.title.downcase }
-      end
-
-      it 'redirects to root path' do
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
     context 'when logged in' do
       before(:each) do
-        session[:user_id] = Fabricate(:user).id
+        set_user
         get :search, q: video.title.downcase
       end
 
@@ -62,6 +44,10 @@ describe VideosController do
       it 'renders the search template' do
         expect(response).to render_template(:search)
       end
+    end
+
+    it_behaves_like 'a private action' do
+      let(:action) { get :search, q: video.title.downcase }
     end
   end
 end
