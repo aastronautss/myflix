@@ -2,21 +2,10 @@ require 'spec_helper'
 
 describe ReviewsController do
   describe 'POST create' do
-    context 'when logged out' do
-      let(:video) { Fabricate :video }
-
-      it 'redirects to root' do
-        params = { review: Fabricate.attributes_for(:review, user: nil), video_id: video.id }
-        post :create, params
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
     context 'when logged in' do
-      let(:user) { Fabricate :user }
       let(:video) { Fabricate :video }
       before(:each) do
-        session[:user_id] = user.id
+        set_user
         @action = -> (attrs) { post :create, attrs }
       end
 
@@ -35,7 +24,7 @@ describe ReviewsController do
 
         it 'creates a review associated with the signed-in user' do
           @action.call params
-          expect(Review.last.user).to eq(user)
+          expect(Review.last.user).to eq(current_user)
         end
 
         it 'redirects to the video show page' do
@@ -68,6 +57,15 @@ describe ReviewsController do
           @action.call params
           expect(assigns(:reviews)).to match_array(video.reviews)
         end
+      end
+    end
+
+    it_behaves_like 'a private action' do
+      let(:action) do
+        video = Fabricate :video
+        review_attrs = Fabricate.attributes_for :review, user: nil
+        params = { review: review_attrs, video_id: video.id }
+        post :create, params
       end
     end
   end

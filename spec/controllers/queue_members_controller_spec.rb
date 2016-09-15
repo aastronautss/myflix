@@ -4,13 +4,12 @@ describe QueueMembersController do
   describe 'GET index' do
     context 'when logged in' do
       it 'sets @queue_members to the queue members of current user' do
-        alice = Fabricate :user
-        session[:user_id] = alice.id
+        set_user
         vid_1 = Fabricate :video
         vid_2 = Fabricate :video
 
-        member_1 = alice.add_to_queue vid_1
-        member_2 = alice.add_to_queue vid_2
+        member_1 = current_user.add_to_queue vid_1
+        member_2 = current_user.add_to_queue vid_2
 
         get :index
 
@@ -18,12 +17,8 @@ describe QueueMembersController do
       end
     end
 
-    context 'when logged out' do
-      it 'redirects to root path' do
-        get :index
-
-        expect(response).to redirect_to(root_path)
-      end
+    it_behaves_like 'a private action' do
+      let(:action) { get :index }
     end
   end
 
@@ -31,21 +26,9 @@ describe QueueMembersController do
   describe 'POST create' do
     let(:video) { Fabricate :video }
 
-    context 'when not logged in' do
-      before(:each) do
-        session[:user_id] = nil
-        post :create, id: video.id
-      end
-
-      it 'redirects to root path' do
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
     context 'when logged in' do
-      let(:current_user) { Fabricate :user }
       before(:each) do
-        session[:user_id] = current_user.id
+        set_user
         @action = -> { post :create, id: video.id }
       end
 
@@ -77,27 +60,20 @@ describe QueueMembersController do
         end
       end
     end
+
+    it_behaves_like 'a private action' do
+      let(:action) { post :create, id: video.id }
+    end
   end
 
   describe 'DELETE destroy' do
     let(:video) { Fabricate :video }
     let(:other_video) { Fabricate :video }
 
-    context 'when not logged in' do
-      it 'redirects to root path' do
-        current_user = Fabricate :user
-        mem = current_user.add_to_queue video
-        delete :destroy, id: mem.id
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
     context 'when logged in as the incorrect user' do
-      let(:current_user) { Fabricate :user }
       let(:queue_owner) { Fabricate :user }
       before(:each) do
-        session[:user_id] = current_user.id
+        set_user
         member = queue_owner.add_to_queue video
         @action = -> { delete :destroy, id: member.id }
       end
@@ -108,9 +84,8 @@ describe QueueMembersController do
     end
 
     context 'when logged in' do
-      let(:current_user) { Fabricate :user }
       before(:each) do
-        session[:user_id] = current_user.id
+        set_user
         member = current_user.add_to_queue video
         current_user.add_to_queue other_video
         @action = -> { delete :destroy, id: member.id }
@@ -132,15 +107,17 @@ describe QueueMembersController do
         end
       end
     end
+
+    it_behaves_like 'a private action' do
+      let(:action) do
+        alice = Fabricate :user
+        queue_member = alice.add_to_queue video
+        delete :destroy, id: queue_member.id
+      end
+    end
   end
 
   describe 'POST update_queue' do
-    context 'when not logged in' do
-      it 'redirets to root path' do
-        post :update_queue, queue_members: [ { id: 1, position: 1 } ]
-        expect(response).to redirect_to(root_path)
-      end
-    end
 
     context 'when logged in' do
       let(:user) { Fabricate :user }
@@ -277,6 +254,12 @@ describe QueueMembersController do
           @action.call
           expect(queue_members[3].reload[:list_order]).to eq(1)
         end
+      end
+    end
+
+    it_behaves_like 'a private action' do
+      let(:action) do
+        post :update_queue, queue_members: [ { id: 1, position: 1 } ]
       end
     end
   end

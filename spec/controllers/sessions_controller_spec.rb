@@ -73,5 +73,9 @@ describe SessionsController do
         expect(flash[:success]).to_not be_blank
       end
     end
+
+    it_behaves_like 'a private action' do
+      let(:action) { get :destroy }
+    end
   end
 end
