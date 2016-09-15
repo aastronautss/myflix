@@ -20,12 +20,12 @@ class QueueMember < ActiveRecord::Base
     @review.nil? ? nil : @review.rating
   end
 
-  def set_rating(new_rating)
+  def rating=(new_rating)
     return if rating == new_rating || new_rating.blank?
 
     @review ||= Review.find_by user: self.user, video: self.video
     if @review.nil?
-      review = self.user.reviews.build video: self.video, rating: new_rating
+      review = self.user.reviews.build video: self.video, rating: new_rating.to_i
       review.save validate: false
     else
       @review.update_attributes rating: new_rating

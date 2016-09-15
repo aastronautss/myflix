@@ -43,7 +43,9 @@ class QueueMembersController < ApplicationController
     QueueMember.transaction do
       params[:queue_members].each do |attrs|
         member = QueueMember.find attrs[:id]
-        member.update! list_order: attrs[:position] if member.user == current_user
+        if member.user == current_user
+          member.update! list_order: attrs[:position], rating: attrs[:rating]
+        end
       end
     end
   end
