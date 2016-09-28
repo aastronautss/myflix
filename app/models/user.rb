@@ -18,6 +18,10 @@ class User < ActiveRecord::Base
     member.save ? member : false
   end
 
+  def has_video_in_queue?(video)
+    self.queue_members.map(&:video).include? video
+  end
+
   def next_queue_order
     (self.queue_members.maximum(:list_order) || 0) + 1
   end
