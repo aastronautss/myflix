@@ -2,8 +2,30 @@ require 'spec_helper'
 
 describe User do
   context 'associations' do
-    it { should have_many(:reviews).dependent(:destroy) }
-    it { should have_many(:queue_members).dependent(:destroy).order('list_order asc') }
+    it do
+      should have_many(:reviews).
+        dependent(:destroy).
+        order('created_at desc')
+    end
+
+    it do
+      should have_many(:queue_members).
+      dependent(:destroy).
+      order('list_order asc')
+    end
+
+    it do
+      should have_many(:active_followings).
+        dependent(:destroy).
+        class_name('Following').
+        with_foreign_key('follower_id')
+    end
+
+    it do
+      should have_many(:followed_users).
+        through(:active_followings).
+        source(:followed)
+    end
   end
 
   context 'validations' do
@@ -88,6 +110,60 @@ describe User do
     context 'without video in queue' do
       it 'returns false' do
         expect(user.has_video_in_queue? video).to be(false)
+      end
+    end
+  end
+
+  describe '#follow' do
+    let(:user) { Fabricate :user }
+    let(:other_user) { Fabricate :user }
+    let(:action) { user.follow other_user }
+
+    context 'when user is not following other user' do
+      it 'creates a Following record' do
+        expect{ action }.to change(Following, :count).by(1)
+      end
+
+      it 'associates the Following record appropriately' do
+        action
+        new_record = Following.last
+        expect(new_record.follower).to eq(user)
+        expect(new_record.followed).to eq(other_user)
+      end
+
+      it 'returns the Following record' do
+        expect(action).to eq(Following.last)
+      end
+    end
+
+    context 'when user is already following other user' do
+      before { user.follow other_user }
+
+      it 'does not create a Following record' do
+        expect{ action }.to change(Following, :count).by(0)
+      end
+
+      it 'returns false' do
+        expect(action).to be(false)
+      end
+    end
+  end
+
+  describe '#is_following?' do
+    let(:user) { Fabricate :user }
+    let(:other_user) { Fabricate :user }
+    let(:action) { user.is_following? other_user }
+
+    context 'when user is following other user' do
+      it 'returns true' do
+        user.follow other_user
+        expect(action).to be(true)
+      end
+    end
+
+    context 'when user is not following other user' do
+      it 'returns false' do
+        expect(action).to be(false)
       end
     end
   end
