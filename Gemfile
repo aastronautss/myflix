@@ -31,6 +31,7 @@ end
 group :test do
   gem 'database_cleaner', '1.4.1'
   gem 'shoulda-matchers', '2.8.0'
+  gem 'capybara'
   gem 'vcr', '2.9.3'
 end
 

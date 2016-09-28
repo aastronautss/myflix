@@ -73,4 +73,22 @@ describe User do
       end
     end
   end
+
+  describe '#has_video_in_queue?' do
+    let(:user) { Fabricate :user }
+    let(:video) { Fabricate :video }
+
+    context 'with video in queue' do
+      it 'returns true' do
+        user.add_to_queue video
+        expect(user.has_video_in_queue? video).to be(true)
+      end
+    end
+
+    context 'without video in queue' do
+      it 'returns false' do
+        expect(user.has_video_in_queue? video).to be(false)
+      end
+    end
+  end
 end
