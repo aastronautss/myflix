@@ -11,5 +11,10 @@ describe FollowingsController do
     end
 
     it_behaves_like 'a private action'
+
+    it 'sets @followed_users' do
+      action
+      expect(assigns(:followed_users)).to be_present
+    end
   end
 end

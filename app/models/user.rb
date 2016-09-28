@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
     foreign_key: 'followed_id',
     dependent: :destroy
   has_many :followed_users, through: :active_followings, source: :followed
+  has_many :followers, through: :passive_followings, source: :follower
 
   has_secure_password validations: false
 
@@ -58,6 +59,10 @@ class User < ActiveRecord::Base
     end
 
     following
+  end
+
+  def unfollow(other_user)
+    active_followings.find_by(followed_id: other_user.id).destroy
   end
 
   def is_following?(other_user)

@@ -8,12 +8,24 @@
 
 tyler = User.create email: 'tyler@example.com', password: 'tyler', full_name: 'Tyler Guillen'
 
-25.times { Fabricate :user }
+100.times { Fabricate :user }
+
+User.all.each do |user|
+  rand(0..10).times do
+    user.follow User.all.sample
+  end
+end
 
 %w(Comedy Drama Action Adventure Sci-Fi Horror Thriller).each do |cat|
   Category.create name: cat
 end
 
-50.times do
+500.times do
   Fabricate :video
+end
+
+User.all.each do |user|
+  rand(0..20).times do
+    user.add_to_queue Video.all.sample
+  end
 end
