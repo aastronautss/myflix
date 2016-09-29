@@ -18,5 +18,5 @@
           %td.extra-padding= followed_user.queue_members.count
           %td.extra-padding= followed_user.followers.count
           %td.extra-padding
-            = link_to "", method: :post do
+            = link_to unfollow_user_path(followed_user), method: :delete do
               %i.glyphicon.glyphicon-remove

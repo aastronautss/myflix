@@ -5,8 +5,10 @@
         %header
           %img(src="http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(@user.email.downcase)}?s=40")
           %h2 #{@user.full_name}'s queue (#{@user.queue_members.count})
-          - if logged_in?
-            %button.btn.btn-default Follow
+          - if current_user.is_following? @user
+            = link_to 'Unfollow', unfollow_user_path(@user), class: 'btn btn-default pull-right', method: :delete
+          - else
+            = link_to 'Follow', follow_user_path(@user), class: 'btn btn-primary pull-right', method: :create
         %table.table
           %thead
             %tr
