@@ -1,6 +1,24 @@
 require 'spec_helper'
 
 describe UsersController do
+  describe 'GET show' do
+    let(:user) { Fabricate :user }
+    let(:action) { get :show, id: user.id }
+    before { set_user }
+
+    it_behaves_like 'a private action'
+
+    it 'sets @user' do
+      action
+      expect(assigns(:user)).to eq(user)
+    end
+
+    it 'renders :show' do
+      action
+      expect(response).to render_template(:show)
+    end
+  end
+
   describe 'GET new' do
     context 'when logged out' do
       before(:each) do

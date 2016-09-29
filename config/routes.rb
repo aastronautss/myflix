@@ -11,6 +11,7 @@ Myflix::Application.routes.draw do
   get '/home', to: 'videos#index'
   get 'my_queue', to: 'queue_members#index'
   post 'update_queue', to: 'queue_members#update_queue'
+  get 'people', to: 'followings#index'
 
   resources :videos, only: [:index, :show] do
     collection do
@@ -24,7 +25,13 @@ Myflix::Application.routes.draw do
     resources :reviews, only: [:create]
   end
 
-  resources :users, only: [:create]
+  resources :users, only: [:show, :create] do
+    member do
+      post 'follow', to: 'followings#create'
+      delete 'unfollow', to: 'followings#destroy'
+    end
+  end
+
   resources :categories, only: [:show]
   resources :queue_members, only: [:destroy]
 end
