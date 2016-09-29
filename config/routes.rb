@@ -28,4 +28,5 @@ Myflix::Application.routes.draw do
   resources :users, only: [:show, :create]
   resources :categories, only: [:show]
   resources :queue_members, only: [:destroy]
+  resources :followings, only: [:destroy]
 end
