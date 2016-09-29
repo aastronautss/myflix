@@ -25,8 +25,13 @@ Myflix::Application.routes.draw do
     resources :reviews, only: [:create]
   end
 
-  resources :users, only: [:show, :create]
+  resources :users, only: [:show, :create] do
+    member do
+      post 'follow', to: 'followings#create'
+      delete 'unfollow', to: 'followings#destroy'
+    end
+  end
+
   resources :categories, only: [:show]
   resources :queue_members, only: [:destroy]
-  resources :followings, only: [:destroy]
 end
