@@ -6,7 +6,10 @@ class FollowingsController < ApplicationController
   end
 
   def create
-
+    other_user = User.find params[:id]
+    current_user.follow other_user
+    flash[:success] = 'User successfully followed.'
+    redirect_to people_path
   end
 
   def destroy
