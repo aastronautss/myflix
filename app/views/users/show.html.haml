@@ -8,7 +8,7 @@
           - if current_user.is_following? @user
             = link_to 'Unfollow', unfollow_user_path(@user), class: 'btn btn-default pull-right', method: :delete
           - else
-            = link_to 'Follow', follow_user_path(@user), class: 'btn btn-primary pull-right', method: :create
+            = link_to 'Follow', follow_user_path(@user), class: 'btn btn-primary pull-right', method: :post
         %table.table
           %thead
             %tr
