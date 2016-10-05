@@ -15,6 +15,7 @@ class UsersController < ApplicationController
 
     if @user.save
       flash[:success] = "Registration successful! You may now sign in."
+      AppMailer.send_welcome_email(@user).deliver
       redirect_to login_path
     else
       render :new
