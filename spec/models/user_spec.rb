@@ -167,4 +167,35 @@ describe User do
       end
     end
   end
+
+  describe '#generate_reset_token' do
+    let(:user) { Fabricate :user }
+    let(:action) { user.generate_reset_token }
+
+    it 'sets the user\'s reset token' do
+      action
+      expect(user.reset_token).to be_present
+    end
+  end
+
+  describe '#expire_reset_token' do
+    let(:user) { Fabricate :user }
+    let(:action) { user.expire_reset_token }
+
+    before { user.generate_reset_token }
+
+    it 'clears the user\'s reset token' do
+      action
+      expect(user.reset_token).to be_nil
+    end
+  end
+
+  describe '#token_expired?' do
+    let(:user) { Fabricate :user }
+    let(:action) { user.token_expired? }
+
+    context 'when token is not expired' do
+      before { user.generate_reset_token }
+    end
+  end
 end

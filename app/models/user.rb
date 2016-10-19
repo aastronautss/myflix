@@ -13,11 +13,12 @@ class User < ActiveRecord::Base
 
   has_secure_password validations: false
 
-  validates_presence_of :email, :password, :full_name
+  validates_presence_of :email, :full_name
+  validates_presence_of :password, on: :create
   validates_uniqueness_of :email
 
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, on: :create }
-  validates :password, length: { minimum: 5, maximum: 30 }
+  validates :password, length: { minimum: 5, maximum: 30 }, on: :create
   validates :full_name, length: { minimum: 2 }
 
   # ====-----------------------====
@@ -67,5 +68,22 @@ class User < ActiveRecord::Base
 
   def is_following?(other_user)
     followed_users.include? other_user
+  end
+
+  # ====-----------------------====
+  # Reset Token Stuff
+  # ====-----------------------====
+
+  def generate_reset_token
+    self.update reset_token: SecureRandom.urlsafe_base64
+  end
+
+  def expire_reset_token
+    self.reset_token = nil
+    self.save
+  end
+
+  def reset_token_expired?
+    self.reset_token.nil?
   end
 end
