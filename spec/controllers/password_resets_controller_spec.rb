@@ -37,13 +37,23 @@ describe PasswordResetsController do
         post :create, token: user.reset_token, password: 'changed!'
       end
 
-      it 'changes the user\'s password'
+      it 'changes the user\'s password' do
+        user.reload
+        expect(user.authenticate('changed!')).to be_truthy
+      end
 
-      it 'expires the user\'s reset token'
+      it 'expires the user\'s reset token' do
+        user.reload
+        expect(user.reset_token_expired?).to be(true)
+      end
 
-      it 'sets the flash'
+      it 'sets the flash' do
+        expect(flash[:success]).to be_present
+      end
 
-      it 'redirects to login page'
+      it 'redirects to login page' do
+        expect(response).to redirect_to(login_path)
+      end
     end
   end
 end
