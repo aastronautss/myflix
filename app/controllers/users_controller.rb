@@ -41,7 +41,7 @@ class UsersController < ApplicationController
   end
 
   def invite_token_given?
-    !params[:invite_token].nil?
+    !params[:invite_token].blank?
   end
 
   def process_invite
