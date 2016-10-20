@@ -14,6 +14,10 @@ describe User do
       order('list_order asc')
     end
 
+    # ====-----------------------====
+    # Followings
+    # ====-----------------------====
+
     it do
       should have_many(:active_followings).
         dependent(:destroy).
@@ -25,6 +29,28 @@ describe User do
       should have_many(:followed_users).
         through(:active_followings).
         source(:followed)
+    end
+
+    it do
+      should have_many(:followers).
+        through(:passive_followings).
+        source(:follower)
+    end
+
+    # ====-----------------------====
+    # Invites
+    # ====-----------------------====
+
+    it do
+      should have_many(:invitees).
+        through(:outgoing_invites).
+        source(:invitee)
+    end
+
+    it do
+      should have_one(:inviter).
+        through(:incoming_invite).
+        source(:inviter)
     end
   end
 

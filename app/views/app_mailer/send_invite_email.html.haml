@@ -1,0 +1,10 @@
+!!! 5
+%html(lang="en-US")
+  %body
+    %p #{@invite.inviter.full_name} has invited you to join MyFlix! There's lots of good videos there! You should totally join!
+
+    %p Here's a message they've graciously written for you:
+
+    %p= @invite.message
+
+    %p= link_to 'Accept invitation', register_url
