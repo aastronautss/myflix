@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Invite do
+  it_behaves_like 'a tokenable model' do
+    let(:model) { Fabricate :invite }
+  end
+
   context 'associations' do
     it do
       should belong_to(:inviter).
