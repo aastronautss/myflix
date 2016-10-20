@@ -20,7 +20,9 @@ describe InvitesController do
       post :create,
       invite: Fabricate.attributes_for(:invite, inviter: user, email: 'example@example.com')
     end
+
     before { set_user user }
+    after { ActionMailer::Base.deliveries.clear }
 
     it_behaves_like 'a private action'
 
@@ -30,8 +32,6 @@ describe InvitesController do
     end
 
     context 'with valid input' do
-      after { ActionMailer::Base.deliveries.clear }
-
       it 'creates an Invite record' do
         expect{ action }.to change(Invite, :count).by(1)
       end
@@ -65,11 +65,6 @@ describe InvitesController do
       it 'does not send an email to the invitee' do
         action
         expect(ActionMailer::Base.deliveries).to be_empty
-      end
-
-      it 'sets @invite' do
-        action
-        expect(assigns(:invite)).to be_instance_of(Invite)
       end
 
       it 'renders :new' do

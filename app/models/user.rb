@@ -1,4 +1,8 @@
 class User < ActiveRecord::Base
+  # ====-----------------------====
+  # Associations
+  # ====-----------------------====
+
   has_many :reviews, -> { order 'created_at desc' }, dependent: :destroy
   has_many :queue_members, -> { order('list_order asc') }, dependent: :destroy
 
@@ -19,6 +23,10 @@ class User < ActiveRecord::Base
     class_name: 'Invite'
   has_many :invitees, through: :outgoing_invites, source: :invitee
   has_one :inviter, through: :incoming_invite, source: :inviter
+
+  # ====-----------------------====
+  # Validations
+  # ====-----------------------====
 
   has_secure_password validations: false
 

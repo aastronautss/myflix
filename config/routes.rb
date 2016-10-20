@@ -8,6 +8,7 @@ Myflix::Application.routes.draw do
   # ====-----------------------====
 
   get '/register', to: 'users#new'
+  get '/register/:token', to: 'users#new_with_invitation', as: 'register_with_invitation'
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   get '/logout', to: 'sessions#destroy'
