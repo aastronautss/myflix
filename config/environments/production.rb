@@ -27,6 +27,10 @@ Myflix::Application.configure do
     :domain         => 'afternoon-bayou-69393.herokuapp.com',
     :authentication => :plain,
   }
+
+  config.action_mailer.default_url_options = {
+    host: 'https://afternoon-bayou-69393.herokuapp.com'
+  }
 end
 
 # ActionMailer::Base.smtp_settings = {
