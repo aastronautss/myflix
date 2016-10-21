@@ -22,7 +22,7 @@ Myflix::Application.routes.draw do
   get 'invalid_token', to: 'password_resets#invalid_token'
 
   # ====-----------------------====
-  # Administrative
+  # User Stuff
   # ====-----------------------====
 
   get '/home', to: 'videos#index'
@@ -62,6 +62,14 @@ Myflix::Application.routes.draw do
       post 'follow', to: 'followings#create'
       delete 'unfollow', to: 'followings#destroy'
     end
+  end
+
+  # ====-----------------------====
+  # Admin
+  # ====-----------------------====
+
+  namespace :admin do
+    resources :videos, only: [:new, :create]
   end
 
   # ====-----------------------====

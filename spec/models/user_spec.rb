@@ -73,6 +73,18 @@ describe User do
     end
   end
 
+  describe '#admin?' do
+    context 'when user is an admin' do
+      let(:user) { Fabricate :user, admin: true }
+
+      it 'returns true'
+    end
+
+    context 'when user is not an admin' do
+      let(:user) { Fabricate :user }
+    end
+  end
+
   describe '#add_to_queue' do
     let(:user) { Fabricate :user }
     let(:vid_1) { Fabricate :video }

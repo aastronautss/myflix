@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     if @user.save
       process_invite
       flash[:success] = "Registration successful! You may now sign in."
-      AppMailer.send_welcome_email(@user).deliver
+      AppMailer.delay.send_welcome_email(@user)
       redirect_to login_path
     else
       render :new
