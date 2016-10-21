@@ -10,6 +10,7 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'pg'
 gem 'bcrypt'
+gem 'sidekiq'
 
 gem 'bootstrap_form'
 gem 'figaro'
