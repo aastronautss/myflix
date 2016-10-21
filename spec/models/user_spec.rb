@@ -77,11 +77,25 @@ describe User do
     context 'when user is an admin' do
       let(:user) { Fabricate :user, admin: true }
 
-      it 'returns true'
+      it 'returns true' do
+        expect(user.admin?).to be(true)
+      end
     end
 
     context 'when user is not an admin' do
       let(:user) { Fabricate :user }
+
+      it 'returns false' do
+        expect(user.admin?).to be(false)
+      end
+    end
+
+    context 'when user has a nil value for admin' do
+      let(:user) { Fabricate :user, admin: nil }
+
+      it 'returns false' do
+        expect(user.admin?).to be(false)
+      end
     end
   end
 
