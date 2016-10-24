@@ -1,10 +1,7 @@
-class AdminController < ApplicationController
+class AdminController < AuthenticatedController
   before_action :require_admin
 
   def require_admin
-    unless current_user.admin?
-      flash[:danger] = 'You do not have access to that area.'
-      redirect_to root_path
-    end
+    access_denied('You do not have access to that area') unless current_user.admin?
   end
 end
