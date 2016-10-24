@@ -11,4 +11,12 @@
           = hidden_field_tag :invite_token, @invite_token
           %fieldset.actions.control-group
             .controls
-              %input{ type: 'Submit', value: 'Sign Up', class: 'btn' }
+              = javascript_include_tag 'https://checkout.stripe.com/checkout.js',
+                :class => 'stripe-button',
+                :'data-key' => ENV['STRIPE_PUBLISHABLE_KEY'],
+                :'data-label' => 'Sign up!',
+                :'data-amount' => '999',
+                :'data-name' => 'MyFlix Sign Up Charge',
+                :'data-description' => '$9.99 to join today!',
+                :'data-image' => 'https://stripe.com/img/documentation/checkout/marketplace.png',
+                :'data-locale' => 'auto'
