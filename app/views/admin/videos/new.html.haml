@@ -11,7 +11,7 @@
             = f.text_field :title
             = f.collection_select :category_id, @categories, :id, :name
             = f.text_area :description
-            = f.text_field :large_cover_url, label: 'Large Cover'
-            = f.text_field :small_cover_url, label: 'Small Cover'
+            = f.file_field :large_cover, label: 'Large Cover', class: 'btn btn-file'
+            = f.file_field :small_cover, label: 'Small Cover', class: 'btn btn-file'
             .actions.col-sm-6
               = f.submit 'Add Video'

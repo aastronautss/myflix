@@ -17,7 +17,7 @@ describe Admin::VideosController do
 
     it 'sets @categories' do
       action
-      expect(assigns(:categories)).to be_present
+      expect(assigns(:categories)).to respond_to(:each)
     end
   end
 
