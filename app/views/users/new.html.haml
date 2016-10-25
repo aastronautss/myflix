@@ -1,7 +1,13 @@
+= content_for :head do
+  %script(src='https://js.stripe.com/v2/')
+  :javascript
+    Stripe.setPublishableKey('#{ENV['STRIPE_PUBLISHABLE_KEY']}');
+  = javascript_include_tag 'payments'
+
 %section.register.container
   .row
     .col-sm-10.col-sm-offset-1
-      = bootstrap_form_for @user, html: { class: 'form-horizontal' } do |f|
+      = bootstrap_form_for @user, html: { class: 'form-horizontal', id: 'registration-form' } do |f|
         %header
           %h1 Register
         %fieldset
@@ -9,14 +15,22 @@
           = f.password_field :password
           = f.text_field :full_name, label: 'Full Name'
           = hidden_field_tag :invite_token, @invite_token
-          %fieldset.actions.control-group
-            .controls
-              = javascript_include_tag 'https://checkout.stripe.com/checkout.js',
-                :class => 'stripe-button',
-                :'data-key' => ENV['STRIPE_PUBLISHABLE_KEY'],
-                :'data-label' => 'Sign up!',
-                :'data-amount' => '999',
-                :'data-name' => 'MyFlix Sign Up Charge',
-                :'data-description' => '$9.99 to join today!',
-                :'data-image' => 'https://stripe.com/img/documentation/checkout/marketplace.png',
-                :'data-locale' => 'auto'
+        %fieldset.credit_card
+          .payment-errors
+          .form-group
+            %label.control-label.col-sm-2 Credit Card Number
+            .col-sm-6
+              %input.form-control.card-number(type="text")
+          .form-group
+            %label.control-label.col-sm-2 Security Code
+            .col-sm-6
+              %input.form-control.card-cvc(type="text")
+          .form-group
+            %label.control-label.col-sm-2 Expiration
+            .col-sm-3
+              = select_month(Date.today, {add_month_numbers: true},  class: 'form-control card-expiry-month', name: nil)
+            .col-sm-2
+              = select_year(Date.today.year, {start_year: Date.today.year, end_year: Date.today.year + 15}, class: 'form-control card-expiry-year', name: nil)
+        %fieldset.actions.control-group.col-sm-offset-2
+          .controls
+            %input(type="submit" value="Sign Up" class="btn btn-default")
