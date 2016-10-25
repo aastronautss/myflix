@@ -26,6 +26,8 @@ class UsersController < ApplicationController
 
     if @user.save
       process_invite
+      process_payment unless Rails.env.test?
+
       flash[:success] = "Registration successful! You may now sign in."
       AppMailer.delay.send_welcome_email(@user)
       redirect_to login_path
@@ -49,6 +51,25 @@ class UsersController < ApplicationController
       @invite = Invite.find_by token: params[:invite_token]
       set_followings
       expire_token
+    end
+  end
+
+  def process_payment
+    binding.pry
+    Stripe.api_key = ENV['STRIPE_API_KEY']
+
+    token = params[:stripeToken]
+
+    begin
+      charge = Stripe::Charge.create(
+        :amount => 999,
+        :currency => "usd",
+        :source => token,
+        :description => "Example charge"
+      )
+    rescue Stripe::CardError => e
+      flash[:danger] = "There was a problem processing your payment: #{e.message}"
+      redirect_to register_path
     end
   end
 

@@ -14,6 +14,7 @@ gem 'sidekiq'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'carrierwave-aws'
+gem 'stripe'
 
 gem 'bootstrap_form'
 gem 'figaro'
