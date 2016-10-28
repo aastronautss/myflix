@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     begin
       User.transaction do
         token = params[:stripeToken]
-        StripeWrapper::Charge.create amount: 999, card: token
+        StripeWrapper::Charge.create amount: 999, card: token, description: 'MyFlix membership charge'
         @user.save!
 
         flash[:success] = 'Registration successful! You may now sign in.'

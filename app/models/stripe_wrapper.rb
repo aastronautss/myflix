@@ -1,22 +1,14 @@
 module StripeWrapper
   class Charge
-    attr_reader :response, :status
-
-    def initialize(response, status)
-      @response = response
-      @status = status
-    end
-
     def self.create(options = {})
       StripeWrapper.set_api_key
 
-      response = Stripe::Charge.create(
+      Stripe::Charge.create(
         amount: options[:amount],
         currency: 'usd',
-        card: options[:card]
+        card: options[:card],
+        description: options[:description]
       )
-
-      new(response, :success)
     end
   end
 

@@ -40,6 +40,7 @@ group :test do
   gem 'capybara'
   gem 'capybara-email'
   gem 'vcr', '2.9.3'
+  gem 'webmock'
 end
 
 group :production, :staging do
