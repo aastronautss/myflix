@@ -5,6 +5,7 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'sidekiq/testing'
+require 'vcr'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -64,3 +65,9 @@ RSpec.configure do |config|
 end
 
 Sidekiq::Testing.inline!
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/cassettes'
+  c.hook_into :webmock
+  c.configure_rspec_metadata!
+end
