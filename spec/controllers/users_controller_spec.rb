@@ -73,7 +73,7 @@ describe UsersController do
     end
   end
 
-  describe 'POST create', :vcr do
+  describe 'POST create' do
     context 'when logged out' do
       let!(:stripe_token) do
         Stripe.api_key = ENV['STRIPE_API_KEY']
@@ -91,26 +91,26 @@ describe UsersController do
       context 'with valid input' do
         before(:each) { post :create, user: Fabricate.attributes_for(:user), stripeToken: stripe_token }
 
-        it 'creates the user' do
+        it 'creates the user', :vcr do
           expect(User.count).to eq(1)
         end
 
-        it 'redirects to the sign in page' do
+        it 'redirects to the sign in page', :vcr do
           expect(response).to redirect_to(login_path)
         end
 
         context 'sending email' do
-          it 'sends out the email' do
+          it 'sends out the email', :vcr do
             deliveries = ActionMailer::Base.deliveries
             expect(deliveries).to_not be_empty
           end
 
-          it 'sends to the right recipient' do
+          it 'sends to the right recipient', :vcr do
             message = ActionMailer::Base.deliveries.last
             expect(message.to).to include(User.first.email)
           end
 
-          it 'has the right content' do
+          it 'has the right content', :vcr do
             message = ActionMailer::Base.deliveries.last
             expect(message.body).to include(User.first.full_name)
           end
@@ -126,17 +126,17 @@ describe UsersController do
             stripeToken: stripe_token
         end
 
-        it 'sets the inviter as following the invitee' do
+        it 'sets the inviter as following the invitee', :vcr do
           invitee = User.last
           expect(inviter.is_following? invitee).to be(true)
         end
 
-        it 'sets the invitee as following the inviter' do
+        it 'sets the invitee as following the inviter', :vcr do
           invitee = User.last
           expect(invitee.is_following? inviter).to be(true)
         end
 
-        it 'expires the token' do
+        it 'expires the token', :vcr do
           expect(Invite.first.reload.token).to be_nil
         end
       end
@@ -148,15 +148,15 @@ describe UsersController do
           post :create, user: @user_info, stripeToken: stripe_token
         end
 
-        it 'does not create a user' do
+        it 'does not create a user', :vcr do
           expect(User.count).to eq(0)
         end
 
-        it 'sets @user' do
+        it 'sets @user', :vcr do
           expect(assigns(:user)).to be_instance_of(User)
         end
 
-        it 'renders the :new template' do
+        it 'renders the :new template', :vcr do
           expect(response).to render_template(:new)
         end
       end
