@@ -26,9 +26,10 @@ class UsersController < ApplicationController
 
     begin
       User.transaction do
+        @user.save!
+
         token = params[:stripeToken]
         StripeWrapper::Charge.create amount: 999, card: token, description: 'MyFlix membership charge'
-        @user.save!
 
         process_invite
 

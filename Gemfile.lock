@@ -237,7 +237,7 @@ GEM
     unicorn (5.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
-    vcr (2.9.3)
+    vcr (3.0.3)
     webmock (2.1.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -259,7 +259,7 @@ DEPENDENCIES
   carrierwave
   carrierwave-aws
   coffee-rails
-  database_cleaner (= 1.4.1)
+  database_cleaner
   fabrication
   faker
   figaro
@@ -280,11 +280,11 @@ DEPENDENCIES
   thin
   uglifier
   unicorn
-  vcr (= 2.9.3)
+  vcr
   webmock
 
 RUBY VERSION
    ruby 2.1.2p95
 
 BUNDLED WITH
-   1.13.1
+   1.13.6

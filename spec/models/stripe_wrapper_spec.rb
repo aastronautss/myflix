@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe StripeWrapper do
+describe StripeWrapper, :vcr do
   describe StripeWrapper::Charge do
     describe '.create' do
       context 'with valid card' do
-        it 'charges the card successfully', :vcr do
+        it 'charges the card successfully' do
           Stripe.api_key = ENV['STRIPE_API_KEY']
 
           token = Stripe::Token.create(
