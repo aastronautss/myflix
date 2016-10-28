@@ -24,14 +24,18 @@ class UsersController < ApplicationController
   def create
     @user = User.new user_params
 
-    if @user.save
-      process_invite
-      process_payment unless Rails.env.test?
+    begin
+      User.transaction do
+        token = params[:stripeToken]
+        StripeWrapper::Charge.create amount: 999, card: token
+        @user.save!
 
-      flash[:success] = "Registration successful! You may now sign in."
-      AppMailer.delay.send_welcome_email(@user)
-      redirect_to login_path
-    else
+        flash[:success] = 'Registration successful! You may now sign in.'
+        AppMailer.delay.send_welcome_email(@user)
+        redirect_to login_path
+      end
+    rescue Stripe::CardError, ActiveRecord::RecordInvalid => e
+      flash[:danger] = e.message if e.instance_of? Stripe::CardError
       render :new
     end
   end
@@ -55,11 +59,6 @@ class UsersController < ApplicationController
   end
 
   def process_payment
-    binding.pry
-    Stripe.api_key = ENV['STRIPE_API_KEY']
-
-    token = params[:stripeToken]
-
     begin
       charge = Stripe::Charge.create(
         :amount => 999,
