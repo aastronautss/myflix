@@ -73,10 +73,23 @@ describe UsersController do
     end
   end
 
-  describe 'POST create' do
+  describe 'POST create', :vcr do
     context 'when logged out' do
+      let!(:stripe_token) do
+        Stripe.api_key = ENV['STRIPE_API_KEY']
+
+        Stripe::Token.create(
+          card: {
+            number: '4242424242424242',
+            exp_month: 6,
+            exp_year: 1.years.from_now.year,
+            cvc: 123
+          }
+        ).id
+      end
+
       context 'with valid input' do
-        before(:each) { post :create, user: Fabricate.attributes_for(:user) }
+        before(:each) { post :create, user: Fabricate.attributes_for(:user), stripeToken: stripe_token }
 
         it 'creates the user' do
           expect(User.count).to eq(1)
@@ -102,24 +115,29 @@ describe UsersController do
             expect(message.body).to include(User.first.full_name)
           end
         end
+      end
 
-        context 'with invite token given' do
-          let(:inviter) { Fabricate :user }
-          before(:each) { post :create, user: Fabricate.attributes_for(:user), invite_token: Fabricate(:invite, inviter: inviter).token }
+      context 'with invite token given' do
+        let(:inviter) { Fabricate :user }
+        before(:each) do
+          post :create,
+            user: Fabricate.attributes_for(:user),
+            invite_token: Fabricate(:invite, inviter: inviter).token,
+            stripeToken: stripe_token
+        end
 
-          it 'sets the inviter as following the invitee' do
-            invitee = User.last
-            expect(inviter.is_following? invitee).to be(true)
-          end
+        it 'sets the inviter as following the invitee' do
+          invitee = User.last
+          expect(inviter.is_following? invitee).to be(true)
+        end
 
-          it 'sets the invitee as following the inviter' do
-            invitee = User.last
-            expect(invitee.is_following? inviter).to be(true)
-          end
+        it 'sets the invitee as following the inviter' do
+          invitee = User.last
+          expect(invitee.is_following? inviter).to be(true)
+        end
 
-          it 'expires the token' do
-            expect(Invite.first.reload.token).to be_nil
-          end
+        it 'expires the token' do
+          expect(Invite.first.reload.token).to be_nil
         end
       end
 
@@ -127,7 +145,7 @@ describe UsersController do
         before(:each) do
           @user_info = { password: 'password',
                          full_name: Faker::Name.name }
-          post :create, user: @user_info
+          post :create, user: @user_info, stripeToken: stripe_token
         end
 
         it 'does not create a user' do

@@ -30,6 +30,8 @@ class UsersController < ApplicationController
         StripeWrapper::Charge.create amount: 999, card: token, description: 'MyFlix membership charge'
         @user.save!
 
+        process_invite
+
         flash[:success] = 'Registration successful! You may now sign in.'
         AppMailer.delay.send_welcome_email(@user)
         redirect_to login_path
