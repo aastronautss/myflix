@@ -75,88 +75,119 @@ describe UsersController do
 
   describe 'POST create' do
     context 'when logged out' do
-      let!(:stripe_token) do
-        Stripe.api_key = ENV['STRIPE_API_KEY']
+      let!(:stripe_token) { 'abc' }
 
-        Stripe::Token.create(
-          card: {
-            number: '4242424242424242',
-            exp_month: 6,
-            exp_year: 1.years.from_now.year,
-            cvc: 123
-          }
-        ).id
-      end
+      context 'with valid personal info and valid card' do
+        before do
+          charge = double('charge', successful?: true)
+          expect(StripeWrapper::Charge).to receive(:create).and_return(charge)
 
-      context 'with valid input' do
-        before(:each) { post :create, user: Fabricate.attributes_for(:user), stripeToken: stripe_token }
+          post :create, user: Fabricate.attributes_for(:user), stripeToken: stripe_token
+        end
 
-        it 'creates the user', :vcr do
+        it 'creates the user' do
           expect(User.count).to eq(1)
         end
 
-        it 'redirects to the sign in page', :vcr do
+        it 'redirects to the sign in page' do
           expect(response).to redirect_to(login_path)
         end
 
         context 'sending email' do
-          it 'sends out the email', :vcr do
+          it 'sends out the email' do
             deliveries = ActionMailer::Base.deliveries
             expect(deliveries).to_not be_empty
           end
 
-          it 'sends to the right recipient', :vcr do
+          it 'sends to the right recipient' do
             message = ActionMailer::Base.deliveries.last
             expect(message.to).to include(User.first.email)
           end
 
-          it 'has the right content', :vcr do
+          it 'has the right content' do
             message = ActionMailer::Base.deliveries.last
             expect(message.body).to include(User.first.full_name)
           end
         end
       end
 
+      context 'with valid personal info and declined card' do
+        before do
+          charge = double(:charge, successful?: false, message: 'Declined')
+          expect(StripeWrapper::Charge).to receive(:create).and_return(charge)
+
+          post :create,
+            user: Fabricate.attributes_for(:user),
+            stripeToken: stripe_token
+        end
+
+        it 'does not create a User record' do
+          expect(User.count).to eq(0)
+        end
+
+        it 'sets flash.now' do
+          expect(flash.now[:danger]).to be_present
+        end
+
+        it 'sets @user' do
+          expect(assigns(:user)).to be_instance_of(User)
+        end
+
+        it 'renders :new' do
+          expect(response).to render_template(:new)
+        end
+      end
+
       context 'with invite token given' do
         let(:inviter) { Fabricate :user }
         before(:each) do
+          charge = double('charge', successful?: true)
+          expect(StripeWrapper::Charge).to receive(:create).and_return(charge)
+
           post :create,
             user: Fabricate.attributes_for(:user),
             invite_token: Fabricate(:invite, inviter: inviter).token,
             stripeToken: stripe_token
         end
 
-        it 'sets the inviter as following the invitee', :vcr do
+        it 'sets the inviter as following the invitee' do
           invitee = User.last
           expect(inviter.is_following? invitee).to be(true)
         end
 
-        it 'sets the invitee as following the inviter', :vcr do
+        it 'sets the invitee as following the inviter' do
           invitee = User.last
           expect(invitee.is_following? inviter).to be(true)
         end
 
-        it 'expires the token', :vcr do
+        it 'expires the token' do
           expect(Invite.first.reload.token).to be_nil
         end
       end
 
       context 'with invalid input' do
         before(:each) do
+          charge = double('charge')
+          expect(StripeWrapper::Charge).to_not receive(:create)
+
           @user_info = { password: 'password',
                          full_name: Faker::Name.name }
           post :create, user: @user_info, stripeToken: stripe_token
         end
 
-        it 'does not create a user', :vcr do
+        it 'does not create a user' do
           expect(User.count).to eq(0)
         end
 
-        it 'sets @user', :vcr do
+        it 'does not charge the card' do
+          expect(StripeWrapper::Charge).to_not receive(:create)
+        end
+
+        it 'sets @user' do
           expect(assigns(:user)).to be_instance_of(User)
         end
 
-        it 'renders the :new template', :vcr do
+        it 'renders the :new template' do
           expect(response).to render_template(:new)
         end
       end

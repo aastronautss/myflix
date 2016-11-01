@@ -24,20 +24,24 @@ class UsersController < ApplicationController
   def create
     @user = User.new user_params
 
-    begin
-      User.transaction do
-        token = params[:stripeToken]
-        StripeWrapper::Charge.create amount: 999, card: token, description: 'MyFlix membership charge'
-        @user.save!
+    if @user.valid?
+      token = params[:stripeToken]
+      charge = StripeWrapper::Charge.create amount: 999,
+        card: token,
+        description: 'MyFlix membership charge'
 
+      if charge.successful?
+        @user.save
         process_invite
 
         flash[:success] = 'Registration successful! You may now sign in.'
         AppMailer.delay.send_welcome_email(@user)
         redirect_to login_path
+      else
+        flash.now[:danger] = charge.message
+        render :new
       end
-    rescue Stripe::CardError, ActiveRecord::RecordInvalid => e
-      flash[:danger] = e.message if e.instance_of? Stripe::CardError
+    else
       render :new
     end
   end
