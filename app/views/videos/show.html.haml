@@ -6,7 +6,7 @@
       .video_info.col-sm-3
         %header
           %h3= @video.title
-          %span Rating: 4.5/5.0
+          %span Rating: #{@video.star_rating}
         %p= @video.description
         .actions
           %a.btn.btn-primary(href="#{@video.watch_url}") Watch Now

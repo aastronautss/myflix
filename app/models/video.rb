@@ -13,4 +13,9 @@ class Video < ActiveRecord::Base
     return [] if search_term.blank?
     Video.order(:created_at).where('title ILIKE ?', "%#{search_term}%")
   end
+
+  def rating
+    ratings = reviews.map &:rating
+    (ratings.inject(:+) / ratings.length).round(1)
+  end
 end
