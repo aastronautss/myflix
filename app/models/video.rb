@@ -16,6 +16,10 @@ class Video < ActiveRecord::Base
 
   def rating
     ratings = reviews.map &:rating
-    (ratings.inject(:+) / ratings.length).round(1)
+    unless ratings.empty?
+      (ratings.inject(:+) / ratings.length).round(1)
+    else
+      nil
+    end
   end
 end
