@@ -71,11 +71,34 @@ describe Video do
     end
   end
 
-  describe '#average_review' do
-    let(:video) { Fabricate :video }
+  describe '#rating' do
+    context 'with one review' do
+      let(:video) { Fabricate :video, reviews: [] }
+      before { video.reviews << Fabricate(:review, rating: 3, video: video) }
+
+      it 'returns the rating for the review' do
+        expect(video.rating).to eq(3.0)
+      end
+    end
+
+    context 'with multiple reviews' do
+      let(:video) { Fabricate :video, reviews: [] }
+      before do
+        video.reviews << Fabricate(:review, rating: 1, video: video)
+        video.reviews << Fabricate(:review, rating: 5, video: video)
+      end
+
+      it 'returns the average of all the reviews' do
+        expect(video.rating).to eq(3.0)
+      end
+    end
 
     context 'with no reviews' do
+      let(:video) { Fabricate :video, reviews: [] }
 
+      it 'returns nil' do
+        expect(video.rating).to be_nil
+      end
     end
   end
 end
