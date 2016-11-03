@@ -7,9 +7,8 @@ class UserSignup
 
   def sign_up(stripe_token, invite_token)
     if @user.valid?
-      charge = StripeWrapper::Charge.create amount: 999,
-        card: stripe_token,
-        description: 'MyFlix membership charge'
+      charge = StripeWrapper::Charge.create card: stripe_token,
+        email: @user.email
 
       if charge.successful?
         @user.save

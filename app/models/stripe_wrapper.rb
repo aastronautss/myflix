@@ -11,11 +11,10 @@ module StripeWrapper
       StripeWrapper.set_api_key
 
       begin
-        response = Stripe::Charge.create(
-          amount: options[:amount],
-          currency: 'usd',
-          card: options[:card],
-          description: options[:description]
+        response = Stripe::Customer.create(
+          source: options[:card],
+          plan: 'myflix_basic',
+          email: options[:email]
         )
 
         new(response: response)

@@ -33,7 +33,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 28 Oct 2016 18:33:45 GMT
+      - Thu, 03 Nov 2016 19:44:04 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -51,7 +51,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_9SaLRpIJm9gS3I
+      - req_9Uqp9ZKU39w4Py
       Stripe-Version:
       - '2016-07-06'
       Strict-Transport-Security:
@@ -60,10 +60,10 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "tok_199fAjFgeUvs3GmurN8i1jHS",
+          "id": "tok_19Br84FgeUvs3Gmu1AanKqTU",
           "object": "token",
           "card": {
-            "id": "card_199fAjFgeUvs3Gmu8s9xLrJA",
+            "id": "card_19Br84FgeUvs3Gmuret072wi",
             "object": "card",
             "address_city": null,
             "address_country": null,
@@ -87,19 +87,19 @@ http_interactions:
             "tokenization_method": null
           },
           "client_ip": "173.10.171.149",
-          "created": 1477679625,
+          "created": 1478202244,
           "livemode": false,
           "type": "card",
           "used": false
         }
     http_version: 
-  recorded_at: Fri, 28 Oct 2016 18:33:45 GMT
+  recorded_at: Thu, 03 Nov 2016 19:44:04 GMT
 - request:
     method: post
-    uri: https://api.stripe.com/v1/charges
+    uri: https://api.stripe.com/v1/customers
     body:
       encoding: US-ASCII
-      string: amount=999&currency=usd&card=tok_199fAjFgeUvs3GmurN8i1jHS&description=a+valid+charge
+      string: source=tok_19Br84FgeUvs3Gmu1AanKqTU&plan=myflix_basic&email=a%40b.c
     headers:
       Accept:
       - "*/*"
@@ -116,7 +116,7 @@ http_interactions:
         maggios-MacBook-Pro-806.local 16.1.0 Darwin Kernel Version 16.1.0: Thu Oct
         13 21:26:57 PDT 2016; root:xnu-3789.21.3~60/RELEASE_X86_64 x86_64","hostname":"maggios-MacBook-Pro-806.local"}'
       Content-Length:
-      - '84'
+      - '67'
       Host:
       - api.stripe.com
   response:
@@ -127,11 +127,11 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Fri, 28 Oct 2016 18:33:46 GMT
+      - Thu, 03 Nov 2016 19:44:05 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '1701'
+      - '2424'
       Connection:
       - keep-alive
       Access-Control-Allow-Credentials:
@@ -145,7 +145,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_9SaL2IcGgeWxhj
+      - req_9Uqp46iAdCuYl5
       Stripe-Version:
       - '2016-07-06'
       Strict-Transport-Security:
@@ -154,76 +154,96 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "ch_199fAjFgeUvs3GmuRxuNmjES",
-          "object": "charge",
-          "amount": 999,
-          "amount_refunded": 0,
-          "application": null,
-          "application_fee": null,
-          "balance_transaction": "txn_199fAjFgeUvs3GmutHUvDpEh",
-          "captured": true,
-          "created": 1477679625,
+          "id": "cus_9UqpjM8Qil0WIf",
+          "object": "customer",
+          "account_balance": 0,
+          "created": 1478202245,
           "currency": "usd",
-          "customer": null,
-          "description": "a valid charge",
-          "destination": null,
-          "dispute": null,
-          "failure_code": null,
-          "failure_message": null,
-          "fraud_details": {},
-          "invoice": null,
+          "default_source": "card_19Br84FgeUvs3Gmuret072wi",
+          "delinquent": false,
+          "description": null,
+          "discount": null,
+          "email": "a@b.c",
           "livemode": false,
           "metadata": {},
-          "order": null,
-          "outcome": {
-            "network_status": "approved_by_network",
-            "reason": null,
-            "risk_level": "normal",
-            "seller_message": "Payment complete.",
-            "type": "authorized"
-          },
-          "paid": true,
-          "receipt_email": null,
-          "receipt_number": null,
-          "refunded": false,
-          "refunds": {
-            "object": "list",
-            "data": [],
-            "has_more": false,
-            "total_count": 0,
-            "url": "/v1/charges/ch_199fAjFgeUvs3GmuRxuNmjES/refunds"
-          },
-          "review": null,
           "shipping": null,
-          "source": {
-            "id": "card_199fAjFgeUvs3Gmu8s9xLrJA",
-            "object": "card",
-            "address_city": null,
-            "address_country": null,
-            "address_line1": null,
-            "address_line1_check": null,
-            "address_line2": null,
-            "address_state": null,
-            "address_zip": null,
-            "address_zip_check": null,
-            "brand": "Visa",
-            "country": "US",
-            "customer": null,
-            "cvc_check": "pass",
-            "dynamic_last4": null,
-            "exp_month": 6,
-            "exp_year": 2017,
-            "fingerprint": "BKTw6Ixt61DE2nPW",
-            "funding": "credit",
-            "last4": "4242",
-            "metadata": {},
-            "name": null,
-            "tokenization_method": null
+          "sources": {
+            "object": "list",
+            "data": [
+              {
+                "id": "card_19Br84FgeUvs3Gmuret072wi",
+                "object": "card",
+                "address_city": null,
+                "address_country": null,
+                "address_line1": null,
+                "address_line1_check": null,
+                "address_line2": null,
+                "address_state": null,
+                "address_zip": null,
+                "address_zip_check": null,
+                "brand": "Visa",
+                "country": "US",
+                "customer": "cus_9UqpjM8Qil0WIf",
+                "cvc_check": "pass",
+                "dynamic_last4": null,
+                "exp_month": 6,
+                "exp_year": 2017,
+                "fingerprint": "BKTw6Ixt61DE2nPW",
+                "funding": "credit",
+                "last4": "4242",
+                "metadata": {},
+                "name": null,
+                "tokenization_method": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_9UqpjM8Qil0WIf/sources"
           },
-          "source_transfer": null,
-          "statement_descriptor": null,
-          "status": "succeeded"
+          "subscriptions": {
+            "object": "list",
+            "data": [
+              {
+                "id": "sub_9UqpzVJsx4OBhI",
+                "object": "subscription",
+                "application_fee_percent": null,
+                "cancel_at_period_end": false,
+                "canceled_at": null,
+                "created": 1478202245,
+                "current_period_end": 1480794245,
+                "current_period_start": 1478202245,
+                "customer": "cus_9UqpjM8Qil0WIf",
+                "discount": null,
+                "ended_at": null,
+                "livemode": false,
+                "metadata": {},
+                "plan": {
+                  "id": "myflix_basic",
+                  "object": "plan",
+                  "amount": 999,
+                  "created": 1478198264,
+                  "currency": "usd",
+                  "interval": "month",
+                  "interval_count": 1,
+                  "livemode": false,
+                  "metadata": {},
+                  "name": "MyFlix - Basic",
+                  "statement_descriptor": "myflix basic",
+                  "trial_period_days": null
+                },
+                "quantity": 1,
+                "start": 1478202245,
+                "status": "active",
+                "tax_percent": null,
+                "trial_end": null,
+                "trial_start": null
+              }
+            ],
+            "has_more": false,
+            "total_count": 1,
+            "url": "/v1/customers/cus_9UqpjM8Qil0WIf/subscriptions"
+          }
         }
     http_version: 
-  recorded_at: Fri, 28 Oct 2016 18:33:46 GMT
+  recorded_at: Thu, 03 Nov 2016 19:44:05 GMT
 recorded_with: VCR 3.0.3

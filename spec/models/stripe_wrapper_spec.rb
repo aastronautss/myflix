@@ -17,9 +17,8 @@ describe StripeWrapper, :vcr do
           ).id
 
           response = StripeWrapper::Charge.create(
-            amount: 999,
             card: token,
-            description: 'a valid charge'
+            email: 'a@b.c'
           )
 
           expect(response).to be_successful
@@ -42,9 +41,8 @@ describe StripeWrapper, :vcr do
 
         let(:response) do
           StripeWrapper::Charge.create(
-            amount: 999,
             card: token,
-            description: 'an invalid charge'
+            email: 'a@b.c'
           )
         end
 
