@@ -4,10 +4,9 @@ describe StripeWrapper, :vcr do
   describe StripeWrapper::Charge do
     describe '.create' do
       context 'with valid card' do
-        it 'charges the card successfully' do
-          Stripe.api_key = ENV['STRIPE_API_KEY']
-
-          token = Stripe::Token.create(
+        before { Stripe.api_key = ENV['STRIPE_API_KEY'] }
+        let(:token) do
+          Stripe::Token.create(
             card: {
               number: '4242424242424242',
               exp_month: 6,
@@ -15,13 +14,21 @@ describe StripeWrapper, :vcr do
               cvc: 123
             }
           ).id
+        end
 
-          response = StripeWrapper::Charge.create(
+        let(:response) do
+          StripeWrapper::Charge.create(
             card: token,
             email: 'a@b.c'
           )
+        end
 
+        it 'charges the card successfully' do
           expect(response).to be_successful
+        end
+
+        it 'sets an id' do
+          expect(response.id).to be_present
         end
       end
 

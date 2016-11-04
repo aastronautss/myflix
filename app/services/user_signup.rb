@@ -11,6 +11,7 @@ class UserSignup
         email: @user.email
 
       if charge.successful?
+        @user.stripe_customer_id = charge.id
         @user.save
         process_invite(invite_token)
 

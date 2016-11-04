@@ -26,6 +26,10 @@ module StripeWrapper
     def successful?
       @response.present?
     end
+
+    def id
+      @response[:id]
+    end
   end
 
   def self.set_api_key

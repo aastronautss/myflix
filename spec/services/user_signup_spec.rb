@@ -3,17 +3,20 @@ require 'spec_helper'
 describe UserSignup do
   describe '#sign_up' do
     context 'with valid personal info and valid card' do
+      let(:user) { Fabricate.build :user }
+      let(:action) { UserSignup.new(user).sign_up('abcd', nil) }
       before do
-        user = Fabricate.build :user
-
-        response = double :charge, successful?: true
+        response = double :charge, successful?: true, id: '123'
         expect(StripeWrapper::Charge).to receive(:create).and_return(response)
+      end
 
-        UserSignup.new(user).sign_up('abcd', nil)
+      it 'sets the user\'s stripe id' do
+        expect_any_instance_of(User).to receive(:stripe_customer_id=)
+        action
       end
 
       it 'creates the user' do
-        expect(User.count).to eq(1)
+        expect{ action }.to change(User, :count).by(1)
       end
 
       context 'sending email' do
@@ -22,16 +25,19 @@ describe UserSignup do
         end
 
         it 'sends out the email' do
+          action
           deliveries = ActionMailer::Base.deliveries
           expect(deliveries).to_not be_empty
         end
 
         it 'sends to the right recipient' do
+          action
           message = ActionMailer::Base.deliveries.last
           expect(message.to).to include(User.first.email)
         end
 
         it 'has the right content' do
+          action
           message = ActionMailer::Base.deliveries.last
           expect(message.body).to include(User.first.full_name)
         end
@@ -42,7 +48,7 @@ describe UserSignup do
       before do
         user = Fabricate.build :user
 
-        response = double :charge, successful?: false, message: 'Declined'
+        response = double :charge, successful?: false, message: 'Declined', id: '123'
         expect(StripeWrapper::Charge).to receive(:create).and_return(response)
 
         UserSignup.new(user).sign_up('abcd', nil)
@@ -56,7 +62,7 @@ describe UserSignup do
     context 'with invalid personal info' do
       let(:user) { User.new(Fabricate.attributes_for :user, email: '') }
       before do
-        response = double :charge, successful?: true
+        response = double :charge, successful?: true, id: '123'
       end
 
       it 'does not create a user' do
@@ -74,7 +80,7 @@ describe UserSignup do
       let(:inviter) { Fabricate :user }
       let(:invitee) { Fabricate.build :user }
       before(:each) do
-        response = double :charge, successful?: true
+        response = double :charge, successful?: true, id: '123'
         expect(StripeWrapper::Charge).to receive(:create).and_return(response)
 
         invite = Fabricate :invite, inviter: inviter
