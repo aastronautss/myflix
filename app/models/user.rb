@@ -24,6 +24,8 @@ class User < ActiveRecord::Base
   has_many :invitees, through: :outgoing_invites, source: :invitee
   has_one :inviter, through: :incoming_invite, source: :inviter
 
+  has_many :payments
+
   # ====-----------------------====
   # Validations
   # ====-----------------------====
