@@ -6,8 +6,8 @@ describe UserSignup do
       let(:user) { Fabricate.build :user }
       let(:action) { UserSignup.new(user).sign_up('abcd', nil) }
       before do
-        response = double :charge, successful?: true, id: '123'
-        expect(StripeWrapper::Charge).to receive(:create).and_return(response)
+        response = double :customer, successful?: true, id: '123'
+        expect(StripeWrapper::Customer).to receive(:create).and_return(response)
       end
 
       it 'sets the user\'s stripe id' do
@@ -48,8 +48,8 @@ describe UserSignup do
       before do
         user = Fabricate.build :user
 
-        response = double :charge, successful?: false, message: 'Declined', id: '123'
-        expect(StripeWrapper::Charge).to receive(:create).and_return(response)
+        response = double :customer, successful?: false, message: 'Declined', id: '123'
+        expect(StripeWrapper::Customer).to receive(:create).and_return(response)
 
         UserSignup.new(user).sign_up('abcd', nil)
       end
@@ -62,7 +62,7 @@ describe UserSignup do
     context 'with invalid personal info' do
       let(:user) { User.new(Fabricate.attributes_for :user, email: '') }
       before do
-        response = double :charge, successful?: true, id: '123'
+        response = double :customer, successful?: true, id: '123'
       end
 
       it 'does not create a user' do
@@ -70,8 +70,8 @@ describe UserSignup do
         expect(User.count).to eq(0)
       end
 
-      it 'does not charge the card' do
-        expect(StripeWrapper::Charge).to_not receive(:create)
+      it 'does not customer the card' do
+        expect(StripeWrapper::Customer).to_not receive(:create)
         UserSignup.new(user).sign_up('abcd', nil)
       end
     end
@@ -80,8 +80,8 @@ describe UserSignup do
       let(:inviter) { Fabricate :user }
       let(:invitee) { Fabricate.build :user }
       before(:each) do
-        response = double :charge, successful?: true, id: '123'
-        expect(StripeWrapper::Charge).to receive(:create).and_return(response)
+        response = double :customer, successful?: true, id: '123'
+        expect(StripeWrapper::Customer).to receive(:create).and_return(response)
 
         invite = Fabricate :invite, inviter: inviter
         UserSignup.new(invitee).sign_up('abcd', invite.token)
