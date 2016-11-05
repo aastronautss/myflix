@@ -7,11 +7,11 @@ class UserSignup
 
   def sign_up(stripe_token, invite_token)
     if @user.valid?
-      charge = StripeWrapper::Charge.create amount: 999,
-        card: stripe_token,
-        description: 'MyFlix membership charge'
+      customer = StripeWrapper::Customer.create card: stripe_token,
+        user: @user
 
-      if charge.successful?
+      if customer.successful?
+        @user.stripe_customer_id = customer.id
         @user.save
         process_invite(invite_token)
 
@@ -19,7 +19,7 @@ class UserSignup
         @status = :success
       else
         @status = :failure
-        @message = charge.message
+        @message = customer.message
       end
     else
       @status = :failure
