@@ -8,4 +8,10 @@ StripeEvent.configure do |events|
 
     Payment.create user: user, amount: amount, reference_id: reference_id
   end
+
+  events.subscribe 'charge.failed' do |event|
+    user = User.find_by stripe_customer_id: event.data.object.customer
+    user.deactivate
+    AppMailer.delay.send_deactivated_notification(user)
+  end
 end

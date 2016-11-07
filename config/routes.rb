@@ -15,6 +15,8 @@ Myflix::Application.routes.draw do
   post '/login', to: 'sessions#create'
   get '/logout', to: 'sessions#destroy'
 
+  get 'inactive_account', to: 'pages#inactive_account'
+
   # ====-----------------------====
   # Password Resets
   # ====-----------------------====

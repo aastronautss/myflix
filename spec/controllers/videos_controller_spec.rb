@@ -3,6 +3,10 @@ require 'spec_helper'
 describe VideosController do
   describe 'GET show' do
     let(:video) { Fabricate :video }
+    let(:action) { get :show, id: video.id }
+
+    it_behaves_like 'a private action'
+    it_behaves_like 'an active user action'
 
     context 'when logged in' do
       before(:each) do
@@ -23,9 +27,6 @@ describe VideosController do
       end
     end
 
-    it_behaves_like 'a private action' do
-      let(:action) { get :show, id: video.id }
-    end
   end
 
   describe 'GET search' do

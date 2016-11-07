@@ -26,6 +26,18 @@ shared_examples 'an admin action' do
   end
 end
 
+shared_examples 'an active user action' do
+  context 'when logged in as an inactive user' do
+    let(:user) { Fabricate :user, active: false }
+    before { set_user user }
+
+    it 'redirects to inactive account page' do
+      action
+      expect(response).to redirect_to(inactive_account_path)
+    end
+  end
+end
+
 shared_examples 'a tokenable model' do
   it 'generates a token on creation' do
     expect(model.token).to be_present

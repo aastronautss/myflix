@@ -41,6 +41,22 @@ class User < ActiveRecord::Base
   validates :full_name, length: { minimum: 2 }
 
   # ====-----------------------====
+  # Callbacks
+  # ====-----------------------====
+
+  # ====-----------------------====
+  # Activation
+  # ====-----------------------====
+
+  def activate
+    update active: true
+  end
+
+  def deactivate
+    update active: false
+  end
+
+  # ====-----------------------====
   # Queue Stuff
   # ====-----------------------====
 
