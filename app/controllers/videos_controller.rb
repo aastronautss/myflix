@@ -1,4 +1,6 @@
 class VideosController < AuthenticatedController
+  before_action :require_active_user
+
   def index
     @categories = Category.all
   end

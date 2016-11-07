@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
     access_denied('You must be logged in to do that.') unless logged_in?
   end
 
+  def require_active_user
+    redirect_to inactive_account_path unless current_user.active?
+  end
+
   def require_logged_out
     access_denied('You must be logged out to do that.') if logged_in?
   end

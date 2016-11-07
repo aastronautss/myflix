@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :require_logged_out, only: [:new, :new_with_invitation, :create]
   before_action :require_user, only: [:show]
+  before_action :require_active_user, only: [:show]
 
   def show
     @user = User.find params[:id]
