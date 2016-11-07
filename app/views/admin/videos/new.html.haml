@@ -4,8 +4,8 @@
       .col-md-10.col-md-offset-1
         = bootstrap_form_for [:admin, @video], html: { class: 'form-horizontal' } do |f|
           %ul.nav.nav-tabs
-            %li= link_to 'Recent Payments', '/ui/admin_views_payments'
-            %li.active= link_to 'Add a New Video', '#'
+            %li= link_to 'Recent Payments', admin_payments_path
+            %li.active= link_to 'Add a New Video', new_admin_video_path
           %br
           %fieldset.col-sm-6
             = f.text_field :title

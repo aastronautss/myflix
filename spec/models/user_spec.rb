@@ -14,6 +14,8 @@ describe User do
       order('list_order asc')
     end
 
+    it { should have_many(:payments) }
+
     # ====-----------------------====
     # Followings
     # ====-----------------------====
