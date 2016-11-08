@@ -14,6 +14,24 @@ class Video < ActiveRecord::Base
   mount_uploader :large_cover, LargeCoverUploader
   mount_uploader :small_cover, SmallCoverUploader
 
+  def as_indexed_json(options = {})
+    as_json only: [:title, :description]
+  end
+
+  def self.search(q)
+    search_definition = {
+      query: {
+        multi_match: {
+          query: q,
+          fields: ['title', 'description'],
+          operator: 'and'
+        }
+      }
+    }
+
+    __elasticsearch__.search(search_definition)
+  end
+
   def self.search_by_title(search_term)
     return [] if search_term.blank?
     Video.order(:created_at).where('title ILIKE ?', "%#{search_term}%")
