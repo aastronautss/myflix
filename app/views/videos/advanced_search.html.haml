@@ -1,0 +1,53 @@
+%section.advanced_search.container
+  %form.form-horizontal(method="get")
+    %header
+      %h1 Advanced Search
+    .form-group
+      .col-sm-6
+        %label.hidden(for="q")
+        %input.form-control(type="search" id="q" name="q" placeholder="Search videos by title, description")
+    -# .form-group
+    -#   .col-sm-6
+    -#     .checkbox
+    -#       %label
+    -#         %input(type="checkbox") Include Reviews
+    -# .form-group
+    -#   .row.average_rating_label Average Rating
+    -#   %label.col-sm-1.control-label(for="rating_from") From:
+    -#   .col-sm-2
+    -#     %select.form-control(id="rating_from")
+    -#       %option -
+    -#       - (10..50).map { |num| num / 10.0 }.each do |number|
+    -#         %option{ value: number }= number
+    -#   %label.col-sm-1.control-label(for="rating_to") To:
+    -#   .col-sm-2
+    -#     %select.form-control(id="rating_to")
+    -#       %option -
+    -#       - (10..50).map { |num| num / 10.0 }.each do |number|
+    -#         %option{ value: number }= number
+    .form-group
+      .col-sm-6
+        = button_tag(type: "submit", class: "btn btn-primary") do
+          %span.glyphicon.glyphicon-search
+          Search
+  - if @results
+    %hr
+    %h2.results_count Results: #{@results.count} videos found
+    - @results.each do |result|
+      %article.video.row
+        .video_data
+          %figure.col-sm-2
+            %img(src="#{result.small_cover_url}" alt="video cover")
+          .video_body.col-sm-10
+            %header
+              %h3
+                = result.title
+                -# %em.label.label-highlight
+            %p.video_description
+              = result.description
+            %hr
+            .details
+              %span.average_rating Average rating: #{result.star_rating}
+              %span.reviews_count #{result.reviews.count} reviews
+            -# %footer.video_review
+            -#   In nulla hendrerit. Vestibulum volutpat orci varius, euismod quis nunc mattis malesuada, quis nulla tortor lacinia id vestibulum, mattis venenatis sed integer. Lorem ipsum dolor sit amet, qui risus mus aliquet alias, placerat volutpat consequat turpis vivamus quis...
