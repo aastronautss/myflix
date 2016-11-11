@@ -15,19 +15,24 @@ class Video < ActiveRecord::Base
   mount_uploader :small_cover, SmallCoverUploader
 
   def as_indexed_json(options = {})
-    as_json only: [:title, :description]
+    as_json only: [:title, :description],
+      include: { reviews: { only: :body } }
   end
 
-  def self.search(q)
+  def self.search(q, options = {})
     search_definition = {
       query: {
         multi_match: {
           query: q,
-          fields: ['title', 'description'],
+          fields: ['title^100', 'description^50'],
           operator: 'and'
         }
       }
     }
+
+    if options[:reviews]
+      search_definition[:query][:multi_match][:fields] << 'reviews.body'
+    end
 
     __elasticsearch__.search(search_definition)
   end
