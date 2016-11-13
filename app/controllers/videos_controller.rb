@@ -15,6 +15,9 @@ class VideosController < AuthenticatedController
   end
 
   def advanced_search
-    @results = Video.search(params[:q]).records.to_a.map(&:decorate) if params[:q].present?
+    if params[:q].present?
+      @results = Video.search(params[:q], reviews: (params[:reviews] == 'on')).
+        records.to_a.map(&:decorate)
+    end
   end
 end
