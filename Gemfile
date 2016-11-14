@@ -17,7 +17,8 @@ gem 'mini_magick'
 gem 'stripe'
 gem 'stripe_event'
 gem 'draper'
-
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
 gem 'bootstrap_form'
 gem 'figaro'
 
